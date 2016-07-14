@@ -9,8 +9,10 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  NativeAppEventEmitter
 } from 'react-native';
+import BleManager from 'react-native-ble-manager';
 
 class telemetry_ga_android extends Component {
   render() {
