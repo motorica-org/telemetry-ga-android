@@ -27,6 +27,7 @@ class telemetry_ga_android extends Component {
         <Text style={styles.instructions}>
           Shake or press menu button for dev menu
         </Text>
+	<PeripheralState />
       </View>
     );
   }
@@ -52,3 +53,37 @@ const styles = StyleSheet.create({
 });
 
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
+
+setInterval(() => {
+  BleManager.scan([], 5)
+    .then(() => {
+      // Success code
+      console.log('Scan started');
+    })
+    .catch((e) => {
+      console.log('Scan failed' + e);
+    });
+}, 30 * 1000);
+
+class PeripheralState extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {id: 'none'};
+
+    NativeAppEventEmitter.addListener(
+      'BleManagerDiscoverPeripheral',
+      (args) => {
+          // The id: args.id
+          // The name: args.name
+	  console.log(args);
+	  this.setState({ id: args.id });
+      }
+    );
+  }
+
+  render() {
+    return (
+      <Text>{this.state.id}</Text>
+    );
+  }
+}
