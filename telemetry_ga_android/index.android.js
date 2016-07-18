@@ -54,6 +54,11 @@ const styles = StyleSheet.create({
 
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
 
+//let device_id = '00002902-0000-1000-8000-00805f9b34fb';
+let device_id = '46:B4:43:88:98:2B';
+let service_id = "0000180F-0000-1000-8000-00805f9b34fb";
+let char_id = "00002A19-0000-1000-8000-00805f9b34fb";
+
 setInterval(() => {
   BleManager.scan([], 2)
     .then(() => {
@@ -65,6 +70,28 @@ setInterval(() => {
     });
 }, 5 * 1000);
 
+NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
+	BleManager.connect(device_id)
+		.then(() => {
+			// Success code
+			console.log('Connected');
+		})
+		.catch((error) => {
+			// Failure code
+			console.log(error);
+		});
+
+});
+
+setInterval(() => {
+BleManager.read(device_id, service_id, char_id)
+	.then((read_data) => {
+		console.log('Read: ' + read_data);
+	})
+.catch((e) => {
+	console.log(e);
+});
+}, 5 * 1000);
 
 class PeripheralState extends Component {
   constructor(props) {
