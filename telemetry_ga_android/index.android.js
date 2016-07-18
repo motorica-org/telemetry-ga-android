@@ -106,7 +106,7 @@ class PeripheralState extends Component {
 	    .catch((e) => {
 		    console.log(e);
 	    });
-    }, 5 * 1000);
+    }, 1 * 1000);
   }
 
   render() {
