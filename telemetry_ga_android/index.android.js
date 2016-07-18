@@ -83,35 +83,28 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
 
 });
 
-setInterval(() => {
-BleManager.read(device_id, service_id, char_id)
-	.then((read_data) => {
-		console.log('Read: ' + read_data);
-	})
-.catch((e) => {
-	console.log(e);
-});
-}, 5 * 1000);
 
 class PeripheralState extends Component {
   constructor(props) {
     super(props);
-    this.state = {id: 'none'};
+    this.state = {data: 'none'};
 
-    NativeAppEventEmitter.addListener(
-      'BleManagerDiscoverPeripheral',
-      (args) => {
-          // The id: args.id
-          // The name: args.name
-	  console.log(args);
-	  this.setState({ id: args.id });
-      }
-    );
+
+    setInterval(() => {
+	    BleManager.read(device_id, service_id, char_id)
+		    .then((read_data) => {
+			    console.log('Read: ' + read_data);
+			    this.setState({ data: read_data });
+		    })
+	    .catch((e) => {
+		    console.log(e);
+	    });
+    }, 5 * 1000);
   }
 
   render() {
     return (
-      <Text>{this.state.id}</Text>
+      <Text>{this.state.data}</Text>
     );
   }
 }
