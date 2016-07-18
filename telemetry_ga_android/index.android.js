@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
 
 setInterval(() => {
-  BleManager.scan([], 5)
+  BleManager.scan([], 2)
     .then(() => {
       // Success code
       console.log('Scan started');
@@ -63,7 +63,8 @@ setInterval(() => {
     .catch((e) => {
       console.log('Scan failed' + e);
     });
-}, 30 * 1000);
+}, 5 * 1000);
+
 
 class PeripheralState extends Component {
   constructor(props) {
