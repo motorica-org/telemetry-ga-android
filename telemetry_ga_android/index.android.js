@@ -111,7 +111,7 @@ class PeripheralState extends Component {
 
   render() {
     return (
-      <Text>{this.state.count}</Text>
+      <Text style={{fontSize: Math.pow(2, this.state.count)}}>{this.state.count}</Text>
     );
   }
 }
