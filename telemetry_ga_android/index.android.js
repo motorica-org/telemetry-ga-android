@@ -75,6 +75,20 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
 		.then(() => {
 			// Success code
 			console.log('Connected');
+
+			BleManager.startNotification(device_id, service_id, char_id)
+				.then(() => {
+					console.log('Notification started');
+				})
+			.catch((e) => {
+				console.log('Notification has not started' + e);
+			});
+
+			NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
+					(args) => {
+						console.log(args);
+					}
+			);
 		})
 		.catch((error) => {
 			// Failure code
