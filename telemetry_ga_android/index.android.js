@@ -87,14 +87,21 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
 class PeripheralState extends Component {
   constructor(props) {
     super(props);
-    this.state = {data: 'none'};
 
+    let old_data = 'none';
+    let count = 0;
+
+    this.state = {count: count};
 
     setInterval(() => {
 	    BleManager.read(device_id, service_id, char_id)
 		    .then((read_data) => {
+			    if (read_data != old_data) {
+				    count++;
+				    old_data = read_data;
+			    }
 			    console.log('Read: ' + read_data);
-			    this.setState({ data: read_data });
+			    this.setState({ count: count });
 		    })
 	    .catch((e) => {
 		    console.log(e);
@@ -104,7 +111,7 @@ class PeripheralState extends Component {
 
   render() {
     return (
-      <Text>{this.state.data}</Text>
+      <Text>{this.state.count}</Text>
     );
   }
 }
