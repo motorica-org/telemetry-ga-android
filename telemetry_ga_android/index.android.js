@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
 
 //let device_id = '00002902-0000-1000-8000-00805f9b34fb';
-let device_id = '46:B4:43:88:98:2B';
+let device_id = '67:9D:35:B0:00:09';
 let service_id = "0000180F-0000-1000-8000-00805f9b34fb";
 let char_id = "00002A19-0000-1000-8000-00805f9b34fb";
 
@@ -83,12 +83,6 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
 			.catch((e) => {
 				console.log('Notification has not started' + e);
 			});
-
-			NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-					(args) => {
-						console.log(args);
-					}
-			);
 		})
 		.catch((error) => {
 			// Failure code
@@ -106,21 +100,12 @@ class PeripheralState extends Component {
     let count = 0;
 
     this.state = {count: count};
-
-    setInterval(() => {
-	    BleManager.read(device_id, service_id, char_id)
-		    .then((read_data) => {
-			    if (read_data != old_data) {
-				    count++;
-				    old_data = read_data;
-			    }
-			    console.log('Read: ' + read_data);
-			    this.setState({ count: count });
-		    })
-	    .catch((e) => {
-		    console.log(e);
-	    });
-    }, 1 * 1000);
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
+		    (args) => {
+			    console.log(args);
+			    this.setState({ count: this.state.count + 1 });
+		    }
+    );
   }
 
   render() {
