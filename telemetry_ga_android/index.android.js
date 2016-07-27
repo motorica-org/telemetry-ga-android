@@ -28,12 +28,9 @@ class telemetry_ga_android extends Component {
         </Text>
 	<SwitchingComponent
           sources={[
-            <Image source={{uri: 'http://facebook.github.io/react/img/logo_og.png'}}
-	                    style={{width: 400, height: 400}} />,
-            <Image source={{uri: 'http://facebook.github.io/react/img/logo_small.png'}}
-			    style={{width: 400, height: 400}} />,
-            <Image source={{uri: 'http://facebook.github.io/react/img/logo_small_2x.png'}}
-			    style={{width: 400, height: 400}} />,
+            <Image source={require('./img/monsik/pink/small.png')} />,
+            <Image source={require('./img/monsik/pink/medium.png')} />,
+            <Image source={require('./img/monsik/pink/big.png')} />,
           ]}
         />
       </View>
