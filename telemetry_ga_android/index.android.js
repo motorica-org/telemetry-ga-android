@@ -96,7 +96,7 @@ class PeripheralState extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {count: count};
+    this.state = {count: 0};
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
 		    (args) => {
 			    this.setState({ count: this.state.count + 1 });
