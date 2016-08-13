@@ -78,7 +78,11 @@ class SwitchingComponent extends Component {
     }
 
     let g = getNewComponent();
-    setInterval(() => { this.setState({ current_component: g.next().value }); }, 500);
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
+		    (args) => {
+			    this.setState({ current_component: g.next().value });
+		    }
+    );
   }
 
   render() {
