@@ -30,7 +30,6 @@ class telemetry_ga_android extends Component {
         <Text style={styles.instructions}>
           Shake or press menu button for dev menu
         </Text>
-	<PeripheralState />
 	<SwitchingComponent
           sources={[
             <Image source={require('./img/monsik/pink/small.png')} />,
@@ -128,23 +127,3 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
 		});
 
 });
-
-
-class PeripheralState extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {count: 0};
-    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-		    (args) => {
-			    this.setState({ count: this.state.count + 1 });
-		    }
-    );
-  }
-
-  render() {
-    return (
-      <Text style={{fontSize: Math.pow(2, this.state.count)}}>{this.state.count}</Text>
-    );
-  }
-}
