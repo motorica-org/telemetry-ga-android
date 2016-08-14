@@ -13,7 +13,8 @@ import {
   Text,
   View,
   NativeAppEventEmitter,
-  Image
+  Image,
+  Animated,
 } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
@@ -30,6 +31,7 @@ class telemetry_ga_android extends Component {
         <Text style={styles.instructions}>
           Shake or press menu button for dev menu
         </Text>
+	<PulsingImage source={require('./img/monsik/pink/small.png')} />
 	<SwitchingComponent
           sources={[
             <Image source={require('./img/monsik/pink/small.png')} />,
@@ -86,6 +88,50 @@ class SwitchingComponent extends Component {
 
   render() {
       return this.state.current_component;
+  }
+}
+
+class PulsingImage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pulseValue: new Animated.Value(0),
+    };
+
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
+		    (args) => {
+			    this.pulse();
+		    }
+    );
+  }
+
+  render() {
+    return (
+      <Animated.Image
+        source={this.props.source}
+        style={{
+          flex: 1,
+          transform: [
+            {scale: this.state.pulseValue.interpolate({
+              inputRange: [0, 0.5, 1],
+              outputRange: [1, 1.05, 1],
+              }),
+	    },
+          ]
+        }}
+      />
+    );
+  }
+
+  pulse() {
+    this.state.pulseValue.setValue(0.0);
+    Animated.timing(
+      this.state.pulseValue,
+      {
+        toValue: 1.0,
+	duration: 500
+      }
+    ).start();
   }
 }
 
