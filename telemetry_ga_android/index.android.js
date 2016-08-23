@@ -139,8 +139,8 @@ AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android
 
 //let device_id = '00002902-0000-1000-8000-00805f9b34fb';
 let device_id = '67:9D:35:B0:00:09';
-let service_id = "0000180F-0000-1000-8000-00805f9b34fb";
-let char_id = "00002A19-0000-1000-8000-00805f9b34fb";
+let service_id = 'e35c8bac-a062-4e3f-856d-2cfa87f2f171';
+let char_id = '58d3c1f4-b253-4055-9d02-3932126539f8';
 
 setInterval(() => {
   BleManager.scan([], 2)
