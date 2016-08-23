@@ -60,19 +60,24 @@ const deviceId = 'A4:5E:60:B9:B8:24';
 const serviceId = 'e35c8bac-a062-4e3f-856d-2cfa87f2f171';
 const charId = '58d3c1f4-b253-4055-9d02-3932126539f8';
 
+let isConnected = false;
+
 setInterval(() => {
-  BleManager.scan([], 2)
-    .then(() => {
-      console.log('Scan started');
-    })
-    .catch((e) => {
-      console.log(`Scan failed ${e}`);
-    });
+  if (!isConnected) {
+    BleManager.scan([], 2)
+      .then(() => {
+        console.log('Scan started');
+      })
+      .catch((e) => {
+        console.log(`Scan failed ${e}`);
+      });
+  }
 }, 5 * 1000);
 
 NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
   BleManager.connect(deviceId)
     .then(() => {
+      isConnected = true;
       console.log('Connected');
 
       BleManager.startNotification(deviceId, serviceId, charId)
@@ -86,4 +91,10 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
     .catch((error) => {
       console.log(error);
     });
+});
+
+NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', () => {
+  // FIXME: might be a good idea to check for deviceId here.
+  console.log('Disconnected');
+  isConnected = false;
 });
