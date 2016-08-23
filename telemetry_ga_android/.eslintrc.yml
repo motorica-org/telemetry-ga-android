@@ -1,0 +1,13 @@
+extends: airbnb
+plugins:
+  - react
+  - jsx-a11y
+  - import
+rules:
+  max-len:
+    - error
+    - 200
+    - ignoreComments: true
+  object-curly-spacing:
+    - error
+    - never
