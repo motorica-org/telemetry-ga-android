@@ -8,6 +8,3 @@ rules:
     - error
     - 200
     - ignoreComments: true
-  object-curly-spacing:
-    - error
-    - never
