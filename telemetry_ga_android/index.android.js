@@ -7,7 +7,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image, Animated, } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image, Animated } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 class telemetry_ga_android extends Component {
@@ -61,22 +61,22 @@ class SwitchingComponent extends Component {
 
     const sources = this.props.sources; // FIXME: why do we need to copy here?
     this.state = {
-      current_component: sources[0]
+      current_component: sources[0],
     };
 
     function* getNewComponent() {
       while (true) {
-        for (let i of sources) {
+        for (const i of sources) {
           yield i;
         }
       }
     }
 
-    let g = getNewComponent();
+    const g = getNewComponent();
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
       (args) => {
         this.setState({
-          current_component: g.next().value
+          current_component: g.next().value,
         });
       }
     );
@@ -114,7 +114,7 @@ class PulsingImage extends React.Component {
                 outputRange: [1, 1.05, 1],
               }),
             },
-          ]
+          ],
         }}
       />
       );
@@ -126,7 +126,7 @@ class PulsingImage extends React.Component {
       this.state.pulseValue,
       {
         toValue: 1.0,
-        duration: 500
+        duration: 500,
       }
     ).start();
   }
@@ -134,10 +134,10 @@ class PulsingImage extends React.Component {
 
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
 
-//let device_id = '00002902-0000-1000-8000-00805f9b34fb';
-let device_id = '67:9D:35:B0:00:09';
-let service_id = 'e35c8bac-a062-4e3f-856d-2cfa87f2f171';
-let char_id = '58d3c1f4-b253-4055-9d02-3932126539f8';
+// let device_id = '00002902-0000-1000-8000-00805f9b34fb';
+const device_id = 'A4:5E:60:B9:B8:24';
+const service_id = 'e35c8bac-a062-4e3f-856d-2cfa87f2f171';
+const char_id = '58d3c1f4-b253-4055-9d02-3932126539f8';
 
 setInterval(() => {
   BleManager.scan([], 2)
@@ -168,5 +168,4 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
       // Failure code
       console.log(error);
     });
-
 });
