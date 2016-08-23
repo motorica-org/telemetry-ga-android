@@ -7,15 +7,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  NativeAppEventEmitter,
-  Image,
-  Animated,
-} from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image, Animated, } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 class telemetry_ga_android extends Component {
@@ -31,8 +23,8 @@ class telemetry_ga_android extends Component {
         <Text style={styles.instructions}>
           Shake or press menu button for dev menu
         </Text>
-	<PulsingImage source={require('./img/monsik/pink/small.png')} />
-	<SwitchingComponent
+        <PulsingImage source={require('./img/monsik/pink/small.png')} />
+        <SwitchingComponent
           sources={[
             <Image source={require('./img/monsik/pink/small.png')} />,
             <Image source={require('./img/monsik/pink/medium.png')} />,
@@ -40,7 +32,7 @@ class telemetry_ga_android extends Component {
           ]}
         />
       </View>
-    );
+      );
   }
 }
 
@@ -68,7 +60,9 @@ class SwitchingComponent extends Component {
     super(props);
 
     const sources = this.props.sources; // FIXME: why do we need to copy here?
-    this.state = { current_component: sources[0] };
+    this.state = {
+      current_component: sources[0]
+    };
 
     function* getNewComponent() {
       while (true) {
@@ -80,14 +74,16 @@ class SwitchingComponent extends Component {
 
     let g = getNewComponent();
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-		    (args) => {
-			    this.setState({ current_component: g.next().value });
-		    }
+      (args) => {
+        this.setState({
+          current_component: g.next().value
+        });
+      }
     );
   }
 
   render() {
-      return this.state.current_component;
+    return this.state.current_component;
   }
 }
 
@@ -99,9 +95,9 @@ class PulsingImage extends React.Component {
     };
 
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-		    (args) => {
-			    this.pulse();
-		    }
+      (args) => {
+        this.pulse();
+      }
     );
   }
 
@@ -112,15 +108,16 @@ class PulsingImage extends React.Component {
         style={{
           flex: 1,
           transform: [
-            {scale: this.state.pulseValue.interpolate({
-              inputRange: [0, 0.5, 1],
-              outputRange: [1, 1.05, 1],
+            {
+              scale: this.state.pulseValue.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [1, 1.05, 1],
               }),
-	    },
+            },
           ]
         }}
       />
-    );
+      );
   }
 
   pulse() {
@@ -129,7 +126,7 @@ class PulsingImage extends React.Component {
       this.state.pulseValue,
       {
         toValue: 1.0,
-	duration: 500
+        duration: 500
       }
     ).start();
   }
@@ -154,22 +151,22 @@ setInterval(() => {
 }, 5 * 1000);
 
 NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
-	BleManager.connect(device_id)
-		.then(() => {
-			// Success code
-			console.log('Connected');
+  BleManager.connect(device_id)
+    .then(() => {
+      // Success code
+      console.log('Connected');
 
-			BleManager.startNotification(device_id, service_id, char_id)
-				.then(() => {
-					console.log('Notification started');
-				})
-			.catch((e) => {
-				console.log('Notification has not started' + e);
-			});
-		})
-		.catch((error) => {
-			// Failure code
-			console.log(error);
-		});
+      BleManager.startNotification(device_id, service_id, char_id)
+        .then(() => {
+          console.log('Notification started');
+        })
+        .catch((e) => {
+          console.log('Notification has not started' + e);
+        });
+    })
+    .catch((error) => {
+      // Failure code
+      console.log(error);
+    });
 
 });
