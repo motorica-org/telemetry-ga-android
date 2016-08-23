@@ -8,6 +8,25 @@ import React, { Component } from 'react';
 import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image, Animated } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+});
+
 class telemetry_ga_android extends Component {
   render() {
     return (
@@ -34,25 +53,6 @@ class telemetry_ga_android extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-
 class SwitchingComponent extends Component {
   constructor(props) {
     super(props);
@@ -72,7 +72,7 @@ class SwitchingComponent extends Component {
 
     const g = getNewComponent();
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-      (args) => {
+      () => {
         this.setState({
           current_component: g.next().value,
         });
@@ -93,10 +93,21 @@ class PulsingImage extends React.Component {
     };
 
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-      (args) => {
+      () => {
         this.pulse();
       }
     );
+  }
+
+  pulse() {
+    this.state.pulseValue.setValue(0.0);
+    Animated.timing(
+      this.state.pulseValue,
+      {
+        toValue: 1.0,
+        duration: 500,
+      }
+    ).start();
   }
 
   render() {
@@ -117,25 +128,14 @@ class PulsingImage extends React.Component {
       />
       );
   }
-
-  pulse() {
-    this.state.pulseValue.setValue(0.0);
-    Animated.timing(
-      this.state.pulseValue,
-      {
-        toValue: 1.0,
-        duration: 500,
-      }
-    ).start();
-  }
 }
 
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
 
-// let device_id = '00002902-0000-1000-8000-00805f9b34fb';
-const device_id = 'A4:5E:60:B9:B8:24';
-const service_id = 'e35c8bac-a062-4e3f-856d-2cfa87f2f171';
-const char_id = '58d3c1f4-b253-4055-9d02-3932126539f8';
+// let deviceId = '00002902-0000-1000-8000-00805f9b34fb';
+const deviceId = 'A4:5E:60:B9:B8:24';
+const serviceId = 'e35c8bac-a062-4e3f-856d-2cfa87f2f171';
+const charId = '58d3c1f4-b253-4055-9d02-3932126539f8';
 
 setInterval(() => {
   BleManager.scan([], 2)
@@ -144,22 +144,22 @@ setInterval(() => {
       console.log('Scan started');
     })
     .catch((e) => {
-      console.log('Scan failed' + e);
+      console.log(`Scan failed ${e}`);
     });
 }, 5 * 1000);
 
-NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', (args) => {
-  BleManager.connect(device_id)
+NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
+  BleManager.connect(deviceId)
     .then(() => {
       // Success code
       console.log('Connected');
 
-      BleManager.startNotification(device_id, service_id, char_id)
+      BleManager.startNotification(deviceId, serviceId, charId)
         .then(() => {
           console.log('Notification started');
         })
         .catch((e) => {
-          console.log('Notification has not started' + e);
+          console.log(`Notification has not started ${e}`);
         });
     })
     .catch((error) => {
