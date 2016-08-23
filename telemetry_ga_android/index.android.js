@@ -4,8 +4,6 @@
  * @flow
  */
 
-'use strict';
-
 import React, { Component } from 'react';
 import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image, Animated } from 'react-native';
 import BleManager from 'react-native-ble-manager';
