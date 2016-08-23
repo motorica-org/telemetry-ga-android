@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
@@ -31,31 +31,26 @@ const styles = StyleSheet.create({
   },
 });
 
-class telemetry_ga_android extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to Prosthetic Metrics GA!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Shake or press menu button for dev menu
-        </Text>
-        <PulsingImage source={require('./img/monsik/pink/small.png')} />
-        <SwitchingComponent
-          sources={[
-            <Image source={require('./img/monsik/pink/small.png')} />,
-            <Image source={require('./img/monsik/pink/medium.png')} />,
-            <Image source={require('./img/monsik/pink/big.png')} />,
-          ]}
-        />
-      </View>
-      );
-  }
-}
+const telemetry_ga_android = () =>
+  <View style={styles.container}>
+    <Text style={styles.welcome}>
+      Welcome to Prosthetic Metrics GA!
+    </Text>
+    <Text style={styles.instructions}>
+      To get started, edit index.android.js
+    </Text>
+    <Text style={styles.instructions}>
+      Shake or press menu button for dev menu
+    </Text>
+    <PulsingImage source={require('./img/monsik/pink/small.png')} />
+    <SwitchingComponent
+      sources={[
+        <Image source={require('./img/monsik/pink/small.png')} />,
+        <Image source={require('./img/monsik/pink/medium.png')} />,
+        <Image source={require('./img/monsik/pink/big.png')} />,
+      ]}
+    />
+  </View>;
 
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
 
