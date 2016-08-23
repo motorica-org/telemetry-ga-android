@@ -5,8 +5,11 @@
  */
 
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image, Animated } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image } from 'react-native';
 import BleManager from 'react-native-ble-manager';
+
+import PulsingImage from './PulsingImage';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -82,51 +85,6 @@ class SwitchingComponent extends Component {
 
   render() {
     return this.state.current_component;
-  }
-}
-
-class PulsingImage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pulseValue: new Animated.Value(0),
-    };
-
-    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-      () => {
-        this.pulse();
-      }
-    );
-  }
-
-  pulse() {
-    this.state.pulseValue.setValue(0.0);
-    Animated.timing(
-      this.state.pulseValue,
-      {
-        toValue: 1.0,
-        duration: 500,
-      }
-    ).start();
-  }
-
-  render() {
-    return (
-      <Animated.Image
-        source={this.props.source}
-        style={{
-          flex: 1,
-          transform: [
-            {
-              scale: this.state.pulseValue.interpolate({
-                inputRange: [0, 0.5, 1],
-                outputRange: [1, 1.05, 1],
-              }),
-            },
-          ],
-        }}
-      />
-      );
   }
 }
 
