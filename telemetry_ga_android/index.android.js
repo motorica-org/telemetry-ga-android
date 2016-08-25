@@ -5,8 +5,10 @@
  */
 
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, Image } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, NativeModules, Image } from 'react-native';
 import BleManager from 'react-native-ble-manager';
+
+const Matrix = NativeModules.MatrixReactWrapper;
 
 import SwitchingComponent from './SwitchingComponent';
 import PulsingImage from './PulsingImage';
@@ -92,6 +94,8 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
       console.log(error);
     });
 });
+
+NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => { Matrix.sendMessage('m.text', 'flex'); });
 
 NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', () => {
   // FIXME: might be a good idea to check for deviceId here.
