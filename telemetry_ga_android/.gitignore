@@ -39,3 +39,6 @@ buck-out/
 \.buckd/
 android/app/libs
 android/keystores/debug.keystore
+
+# Secret tokens
+android/app/src/main/res/values/secrets_matrix.xml
