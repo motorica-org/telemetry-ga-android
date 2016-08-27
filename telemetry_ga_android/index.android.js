@@ -97,7 +97,14 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
     });
 });
 
-NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => { Matrix.sendMessage('m.text', {'body': 'flex'}).done(); });
+NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => {
+  Matrix.sendMessage('motorica-org.mechanical.v1.flex',
+      {
+        'body': 'flex',
+        'timestamp': Date.now(),
+        'power': 255,
+      }).done();
+});
 
 NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', () => {
   // FIXME: might be a good idea to check for deviceId here.
