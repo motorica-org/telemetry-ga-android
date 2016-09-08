@@ -29,8 +29,7 @@ export default class extends React.Component {
 
   render() {
     return (
-      <Animated.Image
-        source={this.props.source}
+      <Animated.View
         style={{
           flex: 1,
           transform: [
@@ -42,7 +41,9 @@ export default class extends React.Component {
             },
           ],
         }}
-      />
+      >
+        {this.props.sources}
+      </Animated.View>
       );
   }
 }

@@ -9,7 +9,7 @@ import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, NativeModul
 import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
-import PulsingImage from './PulsingImage';
+import PulsingComponent from './PulsingComponent';
 
 const Matrix = NativeModules.MatrixReactWrapper;
 Matrix.initClient().done();
@@ -46,7 +46,11 @@ const telemetry_ga_android = () =>
     <Text style={styles.instructions}>
       Shake or press menu button for dev menu
     </Text>
-    <PulsingImage source={require('./img/monsik/pink/small.png')} />
+    <PulsingComponent
+      sources={[
+        <Image key='./img/monsik/pink/small.png' source={require('./img/monsik/pink/small.png')} />, // TODO: do we have to specify `key`?
+      ]}
+    />
     <SwitchingComponent
       sources={[
         <Image source={require('./img/monsik/pink/small.png')} />,
