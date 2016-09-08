@@ -8,12 +8,12 @@ import React from 'react';
 import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, NativeModules, Image } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
+import SwitchingComponent from './SwitchingComponent';
+import PulsingImage from './PulsingImage';
+
 const Matrix = NativeModules.MatrixReactWrapper;
 Matrix.initClient().done();
 Matrix.initRoomClient().done();
-
-import SwitchingComponent from './SwitchingComponent';
-import PulsingImage from './PulsingImage';
 
 
 const styles = StyleSheet.create({
@@ -99,11 +99,11 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
 
 NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => {
   Matrix.sendMessage('motorica-org.mechanical.v1.flex',
-      {
-        'body': 'flex',
-        'timestamp': Date.now(),
-        'power': 255,
-      }).done();
+    {
+      body: 'flex',
+      timestamp: Date.now(),
+      power: 255,
+    }).done();
 });
 
 NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', () => {
