@@ -2,7 +2,7 @@ import React from 'react';
 import { NativeAppEventEmitter, Animated } from 'react-native';
 
 
-class PulsingImage extends React.Component {
+export default class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,5 +46,3 @@ class PulsingImage extends React.Component {
       );
   }
 }
-
-module.exports = PulsingImage;

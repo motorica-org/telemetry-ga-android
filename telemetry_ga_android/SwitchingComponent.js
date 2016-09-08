@@ -2,7 +2,7 @@ import React from 'react';
 import { NativeAppEventEmitter } from 'react-native';
 
 
-class SwitchingComponent extends React.Component {
+export default class extends React.Component {
   constructor(props) {
     super(props);
 
@@ -33,5 +33,3 @@ class SwitchingComponent extends React.Component {
     return this.state.current_component;
   }
 }
-
-module.exports = SwitchingComponent;
