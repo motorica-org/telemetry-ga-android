@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, NativeAppEventEmitter, NativeModules, Image } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, Image, NativeAppEventEmitter, NativeModules, AsyncStorage } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
@@ -101,13 +101,21 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
     });
 });
 
-NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => {
+async function incrementFlexCount() {
+  let item = await AsyncStorage.getItem('flex_count');
+  if (item === null) { item = 0; }
+  return AsyncStorage.setItem('flex_count', `${parseInt(item) + 1}`);
+}
+
+NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', async () => {
   Matrix.sendMessage('motorica-org.mechanical.v1.flex',
     {
       body: 'flex',
       timestamp: Date.now(),
       power: 255,
     }).done();
+  incrementFlexCount().done();
+  console.log(await AsyncStorage.getItem('flex_count'));
 });
 
 NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', () => {
