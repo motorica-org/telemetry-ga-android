@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, Image, NativeAppEventEmitter, NativeModules } from 'react-native';
+import { AppRegistry, StyleSheet, View, Image, NativeAppEventEmitter, NativeModules } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
@@ -24,31 +24,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });
 
 const telemetry_ga_android = () =>
   <View style={styles.container}>
-    <Text style={styles.welcome}>
-      Welcome to Prosthetic Metrics GA!
-    </Text>
-    <Text style={styles.instructions}>
-      To get started, edit index.android.js
-    </Text>
-    <Text style={styles.instructions}>
-      Shake or press menu button for dev menu
-    </Text>
     <SpringingComponent flex_count={ fc.then((fc) => fc.get()) }
       sources={[
         <Image key='./img/monsik/pink/small.png' source={require('./img/monsik/pink/small.png')} />, // TODO: do we have to specify `key`?
