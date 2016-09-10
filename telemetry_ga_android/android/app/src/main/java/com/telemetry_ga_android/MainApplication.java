@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import it.innove.BleManagerPackage;
+import me.neo.react.StatusBarPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new BleManagerPackage(),
+          new StatusBarPackage(),
           new MatrixPackage()
       );
     }

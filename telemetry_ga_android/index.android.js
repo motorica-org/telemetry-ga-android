@@ -7,6 +7,7 @@
 import React from 'react';
 import { AppRegistry, StyleSheet, View, Image, NativeAppEventEmitter, NativeModules } from 'react-native';
 import BleManager from 'react-native-ble-manager';
+import StatusBarAndroid from 'react-native-android-statusbar';
 
 import SwitchingComponent from './SwitchingComponent';
 import SpringingComponent from './SpringingComponent';
@@ -45,6 +46,8 @@ const telemetry_ga_android = () =>
 
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
 
+
+StatusBarAndroid.setHexColor('#ee7793'); // FIXME: move to component
 
 // let deviceId = '00002902-0000-1000-8000-00805f9b34fb';
 const deviceId = 'A4:5E:60:B9:B8:24';
