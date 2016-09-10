@@ -9,8 +9,10 @@ import { AppRegistry, StyleSheet, Text, View, Image, NativeAppEventEmitter, Nati
 import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
-import PulsingComponent from './PulsingComponent';
+import SpringingComponent from './SpringingComponent';
+
 import FlexCount from './FlexCount';
+const fc = FlexCount.fromAsyncStorage();
 
 const Matrix = NativeModules.MatrixReactWrapper;
 Matrix.initClient().done();
@@ -47,7 +49,7 @@ const telemetry_ga_android = () =>
     <Text style={styles.instructions}>
       Shake or press menu button for dev menu
     </Text>
-    <PulsingComponent
+    <SpringingComponent flex_count={ fc.then((fc) => fc.get()) }
       sources={[
         <Image key='./img/monsik/pink/small.png' source={require('./img/monsik/pink/small.png')} />, // TODO: do we have to specify `key`?
       ]}
@@ -101,8 +103,6 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
       console.log(error);
     });
 });
-
-const fc = FlexCount.fromAsyncStorage();
 
 NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => {
   Matrix.sendMessage('motorica-org.mechanical.v1.flex',
