@@ -5,11 +5,11 @@
  */
 
 import React from 'react';
-import { AppRegistry, StyleSheet, View, Image, NativeAppEventEmitter, NativeModules } from 'react-native';
+import { AppRegistry, StyleSheet, View, ScrollView, Text, NativeAppEventEmitter, NativeModules } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
-import SpringingComponent from './SpringingComponent';
+import EnlargingImage from './EnlargingImage';
 
 import FlexCount from './FlexCount';
 const fc = FlexCount.fromAsyncStorage();
@@ -19,28 +19,22 @@ Matrix.initClient().done();
 Matrix.initRoomClient().done();
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
 const telemetry_ga_android = () =>
-  <View style={styles.container}>
-    <SpringingComponent flex_count={ fc.then((fc) => fc.get()) }
-      sources={[
-        <Image key='./img/monsik/pink/small.png' source={require('./img/monsik/pink/small.png')} />, // TODO: do we have to specify `key`?
-      ]}
-    />
-    <SwitchingComponent
-      sources={[
-        <Image source={require('./img/monsik/pink/small.png')} />,
-        <Image source={require('./img/monsik/pink/medium.png')} />,
-        <Image source={require('./img/monsik/pink/big.png')} />,
-      ]}
-    />
+  <View style={{flex: 1}}>
+    <View>
+      <Text>Помоги Монсику вырасти силой своего лучезапястного сустава!</Text>
+    </View>
+    <ScrollView>
+    </ScrollView>
+    <View style={{justifyContent:'center', alignItems:'center',}}>
+      <SwitchingComponent flex_count={ fc.then((fc) => fc.get()) }
+        sources={[
+          <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/small.png')}/>,
+          <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/medium.png')}/>,
+          <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/big.png')}/>,
+        ]}
+      />
+    </View>
   </View>;
 
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
