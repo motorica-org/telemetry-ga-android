@@ -35,7 +35,7 @@ export default class extends React.Component {
   }
 
   async _loadInitialState() {
-    this.setState({ flex_count: parseInt(await this.props.flex_count) });
+    this.setState({ flex_count: parseInt(await this.props.flex_count) % 25 });
   }
 
   componentWillMount() {
