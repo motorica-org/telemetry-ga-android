@@ -1,6 +1,5 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * https://gitlab.com/motorica-org/telemetry-ga-android
  * @flow
  */
 
