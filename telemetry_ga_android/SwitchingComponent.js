@@ -6,11 +6,6 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
 
-    const sources = this.props.sources; // FIXME: why do we need to copy here?
-    this.state = {
-      current_component: sources[0],
-    };
-
     function* getNewComponent() {
       while (true) {
         for (const i of sources) {
@@ -20,13 +15,31 @@ export default class extends React.Component {
     }
 
     const g = getNewComponent();
+
+    const sources = this.props.sources; // FIXME: why do we need to copy here?
+    this.state = {
+      flex_count: 0,
+      current_component: g.next().value,
+    };
+
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
       () => {
-        this.setState({
-          current_component: g.next().value,
-        });
+        this.setState({ flex_count: this.state.flex_count += 1 });
+        if (this.state.flex_count % 25 === 0) {
+          this.setState({
+            current_component: g.next().value,
+          });
+        }
       }
     );
+  }
+
+  async _loadInitialState() {
+    this.setState({ flex_count: parseInt(await this.props.flex_count) });
+  }
+
+  componentWillMount() {
+    this._loadInitialState().done();
   }
 
   render() {
