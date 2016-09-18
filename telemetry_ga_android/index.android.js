@@ -9,6 +9,7 @@ import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
 import EnlargingImage from './EnlargingImage';
+import ProgressBar from './ProgressBar';
 
 import FlexCount from './FlexCount';
 const fc = FlexCount.fromAsyncStorage();
@@ -19,20 +20,24 @@ Matrix.initRoomClient().done();
 
 
 const telemetry_ga_android = () =>
-  <View style={{flex: 1}}>
-    <View>
-      <Text>Помоги Монсику вырасти силой своего лучезапястного сустава!</Text>
+  <View style={{flex: 1, flexDirection: 'row',}}>
+    <View style={{flex: 1}}>
+      <View>
+        <Text>Помоги Монсику вырасти силой своего лучезапястного сустава!</Text>
+      </View>
+      <ScrollView></ScrollView>
+      <View style={{justifyContent:'center', alignItems:'center',}}>
+        <SwitchingComponent flex_count={ fc.then((fc) => fc.get()) }
+          sources={[
+            <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/small.png')}/>,
+            <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/medium.png')}/>,
+            <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/big.png')}/>,
+          ]}
+        />
+      </View>
     </View>
-    <ScrollView>
-    </ScrollView>
-    <View style={{justifyContent:'center', alignItems:'center',}}>
-      <SwitchingComponent flex_count={ fc.then((fc) => fc.get()) }
-        sources={[
-          <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/small.png')}/>,
-          <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/medium.png')}/>,
-          <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/big.png')}/>,
-        ]}
-      />
+    <View style={{flex: 0.05, flexDirection:'column', justifyContent: 'flex-end',}}>
+      <ProgressBar flex_count={ fc.then((fc) => fc.get() + 1) } style={{backgroundColor: '#4cade2'}}/>
     </View>
   </View>;
 
