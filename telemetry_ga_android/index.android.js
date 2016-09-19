@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { AppRegistry, StyleSheet, View, ScrollView, Text, NativeAppEventEmitter, NativeModules } from 'react-native';
+import { AppRegistry, StyleSheet, View, ScrollView, Text, ToolbarAndroid, NativeAppEventEmitter, NativeModules } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
@@ -20,24 +20,27 @@ Matrix.initRoomClient().done();
 
 
 const telemetry_ga_android = () =>
-  <View style={{flex: 1, flexDirection: 'row',}}>
-    <View style={{flex: 1}}>
-      <View>
-        <Text>Помоги Монсику вырасти силой своего лучезапястного сустава!</Text>
+  <View style={{flex: 1,}}>
+    <ToolbarAndroid
+      title='Помоги монсику вырасти'
+      subtitle='силой своего лучезапястного сустава'
+      style={{backgroundColor: '#e9eaed', height: 56,}}/>
+    <View style={{flex: 1, flexDirection: 'row',}}>
+      <View style={{flex: 1}}>
+        <ScrollView></ScrollView>
+        <View style={{justifyContent:'center', alignItems:'center',}}>
+          <SwitchingComponent flex_count={ fc.then((fc) => fc.get()) }
+            sources={[
+              <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/small.png')}/>,
+              <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/medium.png')}/>,
+              <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/big.png')}/>,
+            ]}
+          />
+        </View>
       </View>
-      <ScrollView></ScrollView>
-      <View style={{justifyContent:'center', alignItems:'center',}}>
-        <SwitchingComponent flex_count={ fc.then((fc) => fc.get()) }
-          sources={[
-            <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/small.png')}/>,
-            <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/medium.png')}/>,
-            <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/big.png')}/>,
-          ]}
-        />
+      <View style={{flex: 0.05, flexDirection:'column', justifyContent: 'flex-end',}}>
+        <ProgressBar flex_count={ fc.then((fc) => fc.get() + 1) } style={{backgroundColor: '#4cade2'}}/>
       </View>
-    </View>
-    <View style={{flex: 0.05, flexDirection:'column', justifyContent: 'flex-end',}}>
-      <ProgressBar flex_count={ fc.then((fc) => fc.get() + 1) } style={{backgroundColor: '#4cade2'}}/>
     </View>
   </View>;
 
