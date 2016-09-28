@@ -29,7 +29,7 @@ export default class extends React.Component {
     const size = this.state.flex_count / 25;
     return (
       <View style={{flex: 1}}>
-        <View style={{flex: 1 - size}}/>
+        <View style={{flex: 1 - size, backgroundColor: this.props.style.backgroundColor, opacity: 0.2,}}/>
         <View
           style={{
             flex: size,
