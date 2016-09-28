@@ -85,12 +85,12 @@ NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', () => {
     });
 });
 
-NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => {
+NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', (notification) => {
   Matrix.sendMessage('motorica-org.mechanical.v1.flex',
     {
       body: 'flex',
       timestamp: Date.now(),
-      power: 255,
+      power: parseInt(notification.value, 16), // decode from BLE's hex
     }).done();
   fc.then((fc) => {
     fc.set(fc.get() + 1).done();
