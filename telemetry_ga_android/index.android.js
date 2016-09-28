@@ -50,7 +50,7 @@ AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android
 // let deviceId = '00002902-0000-1000-8000-00805f9b34fb';
 const deviceId = 'A4:5E:60:B9:B8:24';
 const serviceId = 'e35c8bac-a062-4e3f-856d-2cfa87f2f171';
-const charId = '58d3c1f4-b253-4055-9d02-3932126539f8';
+const charId = 'e35c8910-a062-4e3f-856d-2cfa87f2f171';
 
 let isConnected = false;
 
