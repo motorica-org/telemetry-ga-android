@@ -12,14 +12,17 @@ import EnlargingImage from './EnlargingImage';
 import ProgressBar from './ProgressBar';
 
 import FlexCount from './FlexCount';
+import Matrix from './Matrix';
+
+
 const fc = FlexCount.fromAsyncStorage();
 
-import Matrix from './Matrix';
 Matrix.initClient().done();
 Matrix.initRoomClient().done();
 
 BleManager.start().done();
 BleManager.enableBluetooth().done();
+
 
 class telemetry_ga_android extends React.Component {
   constructor(props) {
