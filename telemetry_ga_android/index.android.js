@@ -19,6 +19,7 @@ Matrix.initClient().done();
 Matrix.initRoomClient().done();
 
 BleManager.start().done();
+BleManager.enableBluetooth().done();
 
 class telemetry_ga_android extends React.Component {
   constructor(props) {
