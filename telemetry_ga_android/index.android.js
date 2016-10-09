@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { AppRegistry, StyleSheet, View, ScrollView, Text, ToolbarAndroid, NativeAppEventEmitter, NativeModules } from 'react-native';
+import { AppRegistry, StyleSheet, View, ScrollView, Text, ToolbarAndroid, NativeAppEventEmitter } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
@@ -14,7 +14,7 @@ import ProgressBar from './ProgressBar';
 import FlexCount from './FlexCount';
 const fc = FlexCount.fromAsyncStorage();
 
-const Matrix = NativeModules.MatrixReactWrapper;
+import Matrix from './Matrix';
 Matrix.initClient().done();
 Matrix.initRoomClient().done();
 
