@@ -18,6 +18,7 @@ const Matrix = NativeModules.MatrixReactWrapper;
 Matrix.initClient().done();
 Matrix.initRoomClient().done();
 
+BleManager.start().done();
 
 class telemetry_ga_android extends React.Component {
   constructor(props) {
