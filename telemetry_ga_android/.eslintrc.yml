@@ -8,3 +8,6 @@ rules:
     - error
     - 200
     - ignoreComments: true
+  radix:
+    - error
+    - as-needed
