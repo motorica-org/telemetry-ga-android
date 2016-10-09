@@ -1,6 +1,6 @@
 {
   "name": "@motorica-org/telemetry_ga_android",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
