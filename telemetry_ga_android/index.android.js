@@ -19,30 +19,54 @@ Matrix.initClient().done();
 Matrix.initRoomClient().done();
 
 
-const telemetry_ga_android = () =>
-  <View style={{flex: 1,}}>
-    <ToolbarAndroid
-      title='Помоги монсику вырасти'
-      subtitle='силой своего лучезапястного сустава'
-      style={{backgroundColor: '#e9eaed', height: 56,}}/>
-    <View style={{flex: 1, flexDirection: 'row',}}>
-      <View style={{flex: 1}}>
-        <ScrollView></ScrollView>
-        <View style={{justifyContent:'center', alignItems:'center',}}>
-          <SwitchingComponent flex_count={ fc.then((fc) => fc.get()) }
-            sources={[
-              <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/small.png')}/>,
-              <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/medium.png')}/>,
-              <EnlargingImage flex_count={ fc.then((fc) => fc.get() + 1) } source={require('./img/monsik/pink/big.png')}/>,
-            ]}
-          />
+class telemetry_ga_android extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      flex_count: 0,
+    };
+
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
+      () => { this.setState({ flex_count: this.state.flex_count += 1 }); }
+    );
+  }
+
+  async _loadInitialState() {
+    this.setState({ flex_count: parseInt((await fc).get()) });
+  }
+
+  componentWillMount() {
+    this._loadInitialState().done();
+  }
+
+  render() {
+    return (
+    <View style={{flex: 1,}}>
+      <ToolbarAndroid
+        title='Помоги монсику вырасти'
+        subtitle='силой своего лучезапястного сустава'
+        style={{backgroundColor: '#e9eaed', height: 56,}}/>
+      <View style={{flex: 1, flexDirection: 'row',}}>
+        <View style={{flex: 1}}>
+          <ScrollView></ScrollView>
+          <View style={{justifyContent:'center', alignItems:'center',}}>
+            <SwitchingComponent flex_count={this.state.flex_count}
+              sources={[
+                <EnlargingImage flex_count={this.state.flex_count} source={require('./img/monsik/pink/small.png')}/>,
+                <EnlargingImage flex_count={this.state.flex_count} source={require('./img/monsik/pink/medium.png')}/>,
+                <EnlargingImage flex_count={this.state.flex_count} source={require('./img/monsik/pink/big.png')}/>,
+              ]}
+            />
+          </View>
+        </View>
+        <View style={{flex: 0.05, flexDirection:'column', justifyContent: 'flex-end',}}>
+          <ProgressBar flex_count={this.state.flex_count} style={{backgroundColor: '#4cade2'}}/>
         </View>
       </View>
-      <View style={{flex: 0.05, flexDirection:'column', justifyContent: 'flex-end',}}>
-        <ProgressBar flex_count={ fc.then((fc) => fc.get() + 1) } style={{backgroundColor: '#4cade2'}}/>
-      </View>
     </View>
-  </View>;
+    );
+  }
+}
 
 AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
 
