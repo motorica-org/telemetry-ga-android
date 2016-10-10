@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { AppRegistry, StyleSheet, View, ScrollView, Text, ToolbarAndroid, NativeAppEventEmitter } from 'react-native';
+import { AppRegistry, View, ScrollView, ToolbarAndroid, NativeAppEventEmitter } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import SwitchingComponent from './SwitchingComponent';
@@ -15,6 +15,10 @@ import FlexCount from './FlexCount';
 import Matrix from './Matrix';
 
 
+const monsikPinkSmall = require('./img/monsik/pink/small.png');
+const monsikPinkMedium = require('./img/monsik/pink/medium.png');
+const monsikPinkBig = require('./img/monsik/pink/big.png');
+
 const fc = FlexCount.fromAsyncStorage();
 
 Matrix.initClient().done();
@@ -24,7 +28,7 @@ BleManager.start().done();
 BleManager.enableBluetooth().done();
 
 
-class telemetry_ga_android extends React.Component {
+class TelemetryGAAndroid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,12 +40,12 @@ class telemetry_ga_android extends React.Component {
     );
   }
 
-  async _loadInitialState() {
-    this.setState({ flex_count: parseInt((await fc).get()) });
+  componentWillMount() {
+    this.loadInitialState().done();
   }
 
-  componentWillMount() {
-    this._loadInitialState().done();
+  async loadInitialState() {
+    this.setState({ flex_count: parseInt((await fc).get()) });
   }
 
   render() {
@@ -59,9 +63,9 @@ class telemetry_ga_android extends React.Component {
               <SwitchingComponent
                 flex_count={this.state.flex_count}
                 sources={[
-                  <EnlargingImage flex_count={this.state.flex_count} source={require('./img/monsik/pink/small.png')} />,
-                  <EnlargingImage flex_count={this.state.flex_count} source={require('./img/monsik/pink/medium.png')} />,
-                  <EnlargingImage flex_count={this.state.flex_count} source={require('./img/monsik/pink/big.png')} />,
+                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkSmall} />,
+                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkMedium} />,
+                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkBig} />,
                 ]}
               />
             </View>
@@ -75,7 +79,7 @@ class telemetry_ga_android extends React.Component {
   }
 }
 
-AppRegistry.registerComponent('telemetry_ga_android', () => telemetry_ga_android);
+AppRegistry.registerComponent('telemetry_ga_android', () => TelemetryGAAndroid);
 
 
 // let deviceId = '00002902-0000-1000-8000-00805f9b34fb';
@@ -123,9 +127,9 @@ NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', (
       timestamp: Date.now(),
       power: parseInt(notification.value, 16), // decode from BLE's hex
     }).done();
-  fc.then((fc) => {
-    fc.set(fc.get() + 1).done();
-    console.log(fc.get());
+  fc.then((_fc) => {
+    _fc.set(_fc.get() + 1).done();
+    console.log(_fc.get());
   });
 });
 
