@@ -4,20 +4,21 @@
  */
 
 import React from 'react';
-import { AppRegistry, View, ScrollView, ToolbarAndroid, NativeAppEventEmitter } from 'react-native';
+import { AppRegistry, NativeAppEventEmitter } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
-import SwitchingComponent from './SwitchingComponent';
-import EnlargingImage from './EnlargingImage';
-import ProgressBar from './ProgressBar';
+import {
+  createRouter,
+  NavigationProvider,
+  StackNavigation,
+} from '@exponent/ex-navigation';
+
+import MainScreen from './MainScreen';
+import SettingsScreen from './SettingsScreen';
 
 import FlexCount from './FlexCount';
 import Matrix from './Matrix';
 
-
-const monsikPinkSmall = require('./img/monsik/pink/small.png');
-const monsikPinkMedium = require('./img/monsik/pink/medium.png');
-const monsikPinkBig = require('./img/monsik/pink/big.png');
 
 const fc = FlexCount.fromAsyncStorage();
 
@@ -28,58 +29,17 @@ BleManager.start().done();
 BleManager.enableBluetooth().done();
 
 
-class TelemetryGAAndroid extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      flex_count: 0,
-    };
+const Router = createRouter(() => ({
+  main: () => MainScreen,
+  settings: () => SettingsScreen,
+}));
 
-    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-      () => { this.setState({ flex_count: this.state.flex_count + 1 }); }
-    );
-  }
+const App = () =>
+  <NavigationProvider router={Router}>
+    <StackNavigation initialRoute={Router.getRoute('main')} />
+  </NavigationProvider>;
 
-  componentWillMount() {
-    this.loadInitialState().done();
-  }
-
-  async loadInitialState() {
-    this.setState({ flex_count: parseInt((await fc).get()) });
-  }
-
-  render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <ToolbarAndroid
-          title="Помоги монсику вырасти"
-          subtitle="силой своего лучезапястного сустава"
-          style={{ backgroundColor: '#e9eaed', height: 56 }}
-        />
-        <View style={{ flex: 1, flexDirection: 'row' }}>
-          <View style={{ flex: 1 }}>
-            <ScrollView />
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <SwitchingComponent
-                flex_count={this.state.flex_count}
-                sources={[
-                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkSmall} />,
-                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkMedium} />,
-                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkBig} />,
-                ]}
-              />
-            </View>
-          </View>
-          <View style={{ flex: 0.05, flexDirection: 'column', justifyContent: 'flex-end' }}>
-            <ProgressBar flex_count={this.state.flex_count} style={{ backgroundColor: '#4cade2' }} />
-          </View>
-        </View>
-      </View>
-    );
-  }
-}
-
-AppRegistry.registerComponent('telemetry_ga_android', () => TelemetryGAAndroid);
+AppRegistry.registerComponent('telemetry_ga_android', () => App);
 
 
 // let deviceId = '00002902-0000-1000-8000-00805f9b34fb';
