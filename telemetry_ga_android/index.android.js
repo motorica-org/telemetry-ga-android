@@ -7,6 +7,12 @@ import React from 'react';
 import { AppRegistry, View, ScrollView, ToolbarAndroid, NativeAppEventEmitter } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
+import {
+  createRouter,
+  NavigationProvider,
+  StackNavigation,
+} from '@exponent/ex-navigation';
+
 import SwitchingComponent from './SwitchingComponent';
 import EnlargingImage from './EnlargingImage';
 import ProgressBar from './ProgressBar';
@@ -27,8 +33,7 @@ Matrix.initRoomClient().done();
 BleManager.start().done();
 BleManager.enableBluetooth().done();
 
-
-class TelemetryGAAndroid extends React.Component {
+class MainScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -79,7 +84,16 @@ class TelemetryGAAndroid extends React.Component {
   }
 }
 
-AppRegistry.registerComponent('telemetry_ga_android', () => TelemetryGAAndroid);
+const Router = createRouter(() => ({
+  main: () => MainScreen,
+}));
+
+const App = () =>
+  <NavigationProvider router={Router}>
+    <StackNavigation initialRoute={Router.getRoute('main')} />
+  </NavigationProvider>;
+
+AppRegistry.registerComponent('telemetry_ga_android', () => App);
 
 
 // let deviceId = '00002902-0000-1000-8000-00805f9b34fb';
