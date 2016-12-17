@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { AppRegistry, View, ScrollView, ToolbarAndroid, NativeAppEventEmitter } from 'react-native';
+import { AppRegistry, NativeAppEventEmitter } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import {
@@ -13,17 +13,11 @@ import {
   StackNavigation,
 } from '@exponent/ex-navigation';
 
-import SwitchingComponent from './SwitchingComponent';
-import EnlargingImage from './EnlargingImage';
-import ProgressBar from './ProgressBar';
+import MainScreen from './MainScreen';
 
 import FlexCount from './FlexCount';
 import Matrix from './Matrix';
 
-
-const monsikPinkSmall = require('./img/monsik/pink/small.png');
-const monsikPinkMedium = require('./img/monsik/pink/medium.png');
-const monsikPinkBig = require('./img/monsik/pink/big.png');
 
 const fc = FlexCount.fromAsyncStorage();
 
@@ -33,56 +27,6 @@ Matrix.initRoomClient().done();
 BleManager.start().done();
 BleManager.enableBluetooth().done();
 
-class MainScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      flex_count: 0,
-    };
-
-    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-      () => { this.setState({ flex_count: this.state.flex_count + 1 }); }
-    );
-  }
-
-  componentWillMount() {
-    this.loadInitialState().done();
-  }
-
-  async loadInitialState() {
-    this.setState({ flex_count: parseInt((await fc).get()) });
-  }
-
-  render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <ToolbarAndroid
-          title="Помоги монсику вырасти"
-          subtitle="силой своего лучезапястного сустава"
-          style={{ backgroundColor: '#e9eaed', height: 56 }}
-        />
-        <View style={{ flex: 1, flexDirection: 'row' }}>
-          <View style={{ flex: 1 }}>
-            <ScrollView />
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <SwitchingComponent
-                flex_count={this.state.flex_count}
-                sources={[
-                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkSmall} />,
-                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkMedium} />,
-                  <EnlargingImage flex_count={this.state.flex_count} source={monsikPinkBig} />,
-                ]}
-              />
-            </View>
-          </View>
-          <View style={{ flex: 0.05, flexDirection: 'column', justifyContent: 'flex-end' }}>
-            <ProgressBar flex_count={this.state.flex_count} style={{ backgroundColor: '#4cade2' }} />
-          </View>
-        </View>
-      </View>
-    );
-  }
-}
 
 const Router = createRouter(() => ({
   main: () => MainScreen,
