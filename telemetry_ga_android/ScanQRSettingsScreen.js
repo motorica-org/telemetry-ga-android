@@ -23,6 +23,7 @@ export default class extends React.Component {
     return (
       <Camera
         style={styles.preview}
+        quality={Camera.constants.CaptureQuality.low} // supposed to make things faster
         barCodeTypes={['qr']}
         onBarCodeRead={_ => this.props.navigator.pop()}
       />
