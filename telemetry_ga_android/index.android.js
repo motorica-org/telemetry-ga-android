@@ -14,6 +14,7 @@ import {
 } from '@exponent/ex-navigation';
 
 import MainScreen from './MainScreen';
+import SettingsScreen from './SettingsScreen';
 
 import FlexCount from './FlexCount';
 import Matrix from './Matrix';
@@ -30,6 +31,7 @@ BleManager.enableBluetooth().done();
 
 const Router = createRouter(() => ({
   main: () => MainScreen,
+  settings: () => SettingsScreen,
 }));
 
 const App = () =>

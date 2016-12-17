@@ -47,6 +47,14 @@ export default class extends React.Component {
           actions={[
             { title: 'Settings', icon: settingsIcon, show: 'always' },
           ]}
+          onActionSelected={
+            (position) => {
+              switch (position) {
+                case 0: this.props.navigator.push(this.props.navigator.router.getRoute('settings')); break;
+                default: break;
+              }
+            }
+          }
         />
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <View style={{ flex: 1 }}>
