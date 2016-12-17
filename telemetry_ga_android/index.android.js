@@ -15,6 +15,7 @@ import {
 
 import MainScreen from './MainScreen';
 import SettingsScreen from './SettingsScreen';
+import ScanQRSettingsScreen from './ScanQRSettingsScreen';
 
 import FlexCount from './FlexCount';
 import Matrix from './Matrix';
@@ -32,6 +33,7 @@ BleManager.enableBluetooth().done();
 const Router = createRouter(() => ({
   main: () => MainScreen,
   settings: () => SettingsScreen,
+  scanqrsettings: () => ScanQRSettingsScreen,
 }));
 
 const App = () =>

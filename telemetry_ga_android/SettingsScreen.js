@@ -13,7 +13,7 @@ export default class extends React.Component {
     return (
       <View>
         <Button
-          onPress={() => this.props.navigator.push(this.props.navigator.router.getRoute('main'))}
+          onPress={() => this.props.navigator.push(this.props.navigator.router.getRoute('scanqrsettings'))}
           title="Scan QR-encoded settings"
           color="#303f9f"
         />
