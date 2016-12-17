@@ -12,6 +12,7 @@ import FlexCount from './FlexCount';
 const monsikPinkSmall = require('./img/monsik/pink/small.png');
 const monsikPinkMedium = require('./img/monsik/pink/medium.png');
 const monsikPinkBig = require('./img/monsik/pink/big.png');
+const settingsIcon = require('./img/ic_settings_black_24dp.png');
 
 const fc = FlexCount.fromAsyncStorage();
 
@@ -43,6 +44,9 @@ export default class extends React.Component {
           title="Помоги монсику вырасти"
           subtitle="силой своего лучезапястного сустава"
           style={{ backgroundColor: '#e9eaed', height: 56 }}
+          actions={[
+            { title: 'Settings', icon: settingsIcon, show: 'always' },
+          ]}
         />
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <View style={{ flex: 1 }}>
