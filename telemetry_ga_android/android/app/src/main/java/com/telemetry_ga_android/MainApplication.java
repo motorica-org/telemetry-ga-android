@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import it.innove.BleManagerPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -27,7 +28,8 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new BleManagerPackage(),
-          new MatrixPackage()
+          new MatrixPackage(),
+          new RCTCameraPackage()
       );
     }
   };

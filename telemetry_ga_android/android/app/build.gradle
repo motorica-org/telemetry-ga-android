@@ -136,6 +136,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:25.1.0"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile project(':react-native-ble-manager')
+    compile project(':react-native-camera')
 
     // Matrix and co
     compile(name: 'matrix-sdk-debug-0.6.0', ext: 'aar')
