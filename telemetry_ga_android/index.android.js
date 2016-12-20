@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { AppRegistry, AsyncStorage, NativeAppEventEmitter } from 'react-native';
+import { AppRegistry, AsyncStorage, NativeAppEventEmitter, ToastAndroid } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import {
@@ -44,7 +44,7 @@ const App = () =>
 AppRegistry.registerComponent('telemetry_ga_android', () => App);
 
 
-AsyncStorage.getItem('prostetic_id')
+AsyncStorage.getItem('prosthetic_mac')
   .then(deviceId => (deviceId === null ? Promise.reject() : deviceId))
   .then(
     (deviceId) => {
@@ -103,5 +103,5 @@ AsyncStorage.getItem('prostetic_id')
         isConnected = false;
       });
     },
-    () => console.log('Prostetic id not set')
+    () => ToastAndroid.show('Prostetic id not set, check Settings', ToastAndroid.LONG)
   );
