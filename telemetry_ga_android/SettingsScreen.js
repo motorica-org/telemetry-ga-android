@@ -17,11 +17,6 @@ export default class extends React.Component {
           title="Scan QR-encoded settings"
           color="#303f9f"
         />
-        <Button
-          onPress={() => this.props.navigator.push(this.props.navigator.router.getRoute('main'))}
-          title="Connect the prosthetic"
-          color="#7b1fa2"
-        />
       </View>
     );
   }
