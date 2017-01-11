@@ -1,0 +1,25 @@
+image: registry.gitlab.com/motorica-org/gitlab-ci-react-native-android:master
+
+stages:
+  - build
+
+before_script:
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
+  - cd telemetry_ga_android/
+  - chmod +x ./android/gradlew
+
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+  - node_modules/
+  - .gradle/
+
+build:
+  stage: build
+  script:
+    - yarn install
+    - cd android/
+    - ./gradlew assembleDebug
+  artifacts:
+    paths:
+      - telemetry_ga_android/android/app/build/outputs/apk/app-debug.apk
