@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import org.matrix.androidsdk.HomeserverConnectionConfig;
 import org.matrix.androidsdk.MXDataHandler;
 import org.matrix.androidsdk.MXSession;
-import org.matrix.androidsdk.data.MXMemoryStore;
+import org.matrix.androidsdk.data.store.MXMemoryStore;
 import org.matrix.androidsdk.rest.callback.ApiCallback;
 import org.matrix.androidsdk.rest.client.RoomsRestClient;
 import org.matrix.androidsdk.rest.model.Event;
@@ -28,6 +28,7 @@ import org.matrix.androidsdk.rest.model.RoomResponse;
 import org.matrix.androidsdk.rest.model.login.Credentials;
 
 import java.util.HashMap;
+import java.util.Random;
 
 
 class MatrixReactWrapper extends ReactContextBaseJavaModule {
@@ -131,7 +132,12 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
 
         Log.d(TAG, "sendMessage: " + content);
 
-        this.roomClient.sendEventToRoom(this.roomId, "m.room.message", content, new ApiCallback<Event>() {
+        Random r = new Random();
+        String txnid = "";
+        for (int i = 0; i <= 10; i++) {
+            txnid += (char) (r.nextInt(26) + 'a');
+        }
+        this.roomClient.sendEventToRoom(txnid, this.roomId, "m.room.message", content, new ApiCallback<Event>() {
             @Override
             public void onSuccess(Event event) {
                 promise.resolve(event.eventId);
