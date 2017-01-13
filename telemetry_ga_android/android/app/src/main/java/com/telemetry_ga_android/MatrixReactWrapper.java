@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import org.matrix.androidsdk.HomeserverConnectionConfig;
 import org.matrix.androidsdk.MXDataHandler;
 import org.matrix.androidsdk.MXSession;
-import org.matrix.androidsdk.data.store.MXMemoryStore;
+import org.matrix.androidsdk.data.store.MXFileStore;
 import org.matrix.androidsdk.rest.callback.ApiCallback;
 import org.matrix.androidsdk.rest.client.LoginRestClient;
 import org.matrix.androidsdk.rest.client.RoomsRestClient;
@@ -92,7 +92,7 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
     private void initClient(Uri hs, Credentials credentials, final Promise promise) {
         HomeserverConnectionConfig hsConfig = new HomeserverConnectionConfig(hs, credentials);
 
-        MXDataHandler mxDataHandler = new MXDataHandler(new MXMemoryStore(), credentials, new MXDataHandler.InvalidTokenListener() {
+        MXDataHandler mxDataHandler = new MXDataHandler(new MXFileStore(hsConfig, context), credentials, new MXDataHandler.InvalidTokenListener() {
             @Override
             public void onTokenCorrupted() {
                 promise.reject("TokenCorrupted");
