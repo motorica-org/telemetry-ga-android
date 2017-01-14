@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import Camera from 'react-native-camera';
 
+import Matrix from './Matrix';
+
 
 const styles = StyleSheet.create({
   preview: {
@@ -37,8 +39,19 @@ export default class extends React.Component {
         onBarCodeRead={(code) => {
           try {
             const d = JSON.parse(code.data); // throws
-            if (d.type === 'qrconfig.motorica.org' && d.version >= 0.1 && d.prosthetic.kind === 'mechanical') {
+            if (d.type === 'qrconfig.motorica.org' && d.version >= 0.2 && d.prosthetic.kind === 'mechanical') {
               AsyncStorage.setItem('prosthetic_mac', d.prosthetic.mac).done(); // throws
+
+              {
+                const m = d.matrix;
+
+                Matrix.passwordLogin(m.home_server, m.user, m.password)
+                  .then(JSON.parse)
+                  .then(x => ({ ...x, home_server: m.home_server, room_stream_to: m.room_stream_to }))
+                  .then(JSON.stringify)
+                  .then(x => AsyncStorage.setItem('matrix', x)); // throws
+              }
+
               ToastAndroid.show(`Recognised settings for prosthetic ${d.prosthetic.mac}, saving...`, ToastAndroid.SHORT);
               this.props.navigator.pop(); // we are done here
             } else {
