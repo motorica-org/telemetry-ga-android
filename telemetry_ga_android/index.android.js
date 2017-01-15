@@ -23,8 +23,9 @@ import Matrix from './Matrix';
 
 const fc = FlexCount.fromAsyncStorage();
 
-Matrix.initClient().done();
-Matrix.initRoomClient().done();
+Matrix.passwordLogin('https://localhost', 'vasiliy.pupkin', 'iamverysecret')
+  .then((x) => Matrix.initClient('https://localhost', x))
+  .then(() => Matrix.initRoomClient('!TmaZBKYIFrIPVGoUYp:localhost'));
 
 BleManager.start().done();
 BleManager.enableBluetooth().done();
