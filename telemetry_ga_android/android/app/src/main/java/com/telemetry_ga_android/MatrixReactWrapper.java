@@ -21,6 +21,7 @@ import org.matrix.androidsdk.MXDataHandler;
 import org.matrix.androidsdk.MXSession;
 import org.matrix.androidsdk.data.store.MXMemoryStore;
 import org.matrix.androidsdk.rest.callback.ApiCallback;
+import org.matrix.androidsdk.rest.client.LoginRestClient;
 import org.matrix.androidsdk.rest.client.RoomsRestClient;
 import org.matrix.androidsdk.rest.model.Event;
 import org.matrix.androidsdk.rest.model.MatrixError;
@@ -54,20 +55,44 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
     }
 
-    private void initClient(JSONObject credentials, Uri hs, final Promise promise) {
-        Credentials mCredentials;
+    private void passwordLogin(Uri hs, String user, String password, final Promise promise) {
+        new LoginRestClient(new HomeserverConnectionConfig(hs)).loginWithPassword(user, password, new ApiCallback<Credentials>() {
+            @Override
+            public void onSuccess(Credentials credentials) {
+                try {
+                    promise.resolve(credentials.toJson().toString());
+                }
+                catch (JSONException e) {
+                    promise.reject(e);
+                }
+            }
 
-        try {
-            mCredentials = Credentials.fromJson(credentials);
-        }
-        catch (JSONException e) {
-            promise.reject(e);
-            return;
-        }
+            @Override
+            public void onNetworkError(Exception e) {
+                promise.reject(e);
+            }
 
-        HomeserverConnectionConfig hsConfig = new HomeserverConnectionConfig(hs, mCredentials);
+            @Override
+            public void onMatrixError(MatrixError matrixError) {
+                promise.reject(matrixError.mErrorBodyAsString);
+            }
 
-        MXDataHandler mxDataHandler = new MXDataHandler(new MXMemoryStore(), mCredentials, new MXDataHandler.InvalidTokenListener() {
+            @Override
+            public void onUnexpectedError(Exception e) {
+                promise.reject(e);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void passwordLogin(String hs, String user, String password, final Promise promise) {
+        this.passwordLogin(Uri.parse(hs), user, password, promise);
+    }
+
+    private void initClient(Uri hs, Credentials credentials, final Promise promise) {
+        HomeserverConnectionConfig hsConfig = new HomeserverConnectionConfig(hs, credentials);
+
+        MXDataHandler mxDataHandler = new MXDataHandler(new MXMemoryStore(), credentials, new MXDataHandler.InvalidTokenListener() {
             @Override
             public void onTokenCorrupted() {
                 promise.reject("TokenCorrupted");
@@ -75,26 +100,29 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
         });
 
         this.mxSession = new MXSession(hsConfig, mxDataHandler, context);
+
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void initClient(Promise promise) {
-        JSONObject mCredentials;
+    public void initClient(String hs, String credentials, final Promise promise) {
+        Credentials mCredentials;
 
         try {
-            mCredentials = new JSONObject(context.getString(R.string.matrix_token));
+            mCredentials = Credentials.fromJson(new JSONObject(credentials));
         }
         catch (JSONException e) {
             promise.reject(e);
             return;
         }
 
-        this.initClient(mCredentials, Uri.parse(context.getString(R.string.matrix_server)), promise);
+        this.initClient(Uri.parse(hs), mCredentials, promise);
     }
 
-    private void initRoomClient(String roomId, final Promise promise) {
-        this.roomClient = mxSession.getRoomsApiClient();
+    @ReactMethod
+    public void initRoomClient(String roomId, final Promise promise) {
         this.roomId = roomId;
+        this.roomClient = this.mxSession.getRoomsApiClient();
 
         this.roomClient.initialSync(this.roomId, new ApiCallback<RoomResponse>() {
             @Override
@@ -117,11 +145,7 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
                 promise.reject(e);
             }
         });
-    }
 
-    @ReactMethod
-    public void initRoomClient(Promise promise) {
-        this.initRoomClient(context.getString(R.string.matrix_room), promise);
     }
 
     private void sendMessage(String type, ReadableNativeMap body, final Promise promise) {

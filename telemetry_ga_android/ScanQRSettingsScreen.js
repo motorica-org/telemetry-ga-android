@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import Camera from 'react-native-camera';
 
+import Matrix from './Matrix';
+
 
 const styles = StyleSheet.create({
   preview: {
@@ -37,10 +39,21 @@ export default class extends React.Component {
         onBarCodeRead={(code) => {
           try {
             const d = JSON.parse(code.data); // throws
-            if (d.type === 'qrconfig.motorica.org' && d.version >= 0.1 && d.prosthetic.kind === 'mechanical') {
-              AsyncStorage.setItem('prosthetic_mac', d.prosthetic.mac).done(); // throws
-              ToastAndroid.show(`Recognised settings for prosthetic ${d.prosthetic.mac}, saving...`, ToastAndroid.SHORT);
-              this.props.navigator.pop(); // we are done here
+            if (d.type === 'qrconfig.motorica.org' && d.version >= 0.2 && d.prosthetic.kind === 'mechanical') {
+              const a = AsyncStorage.setItem('prosthetic_mac', d.prosthetic.mac).done(); // throws
+
+              const m = d.matrix;
+              const b = Matrix.passwordLogin(m.home_server, m.user, m.password)
+                .then(JSON.parse)
+                .then(x => ({ ...x, home_server: m.home_server, room_stream_to: m.room_stream_to }))
+                .then(JSON.stringify)
+                .then(x => AsyncStorage.setItem('matrix', x)) // throws
+                .catch(() => ToastAndroid.show('Bad QR code', ToastAndroid.SHORT)); // FIXME: this might be a passwordLogin, a JSON parsing or a saving error
+
+              Promise.all([a, b]).then(() => {
+                ToastAndroid.show(`Recognised settings for prosthetic ${d.prosthetic.mac}, saving...`, ToastAndroid.SHORT);
+                this.props.navigator.pop(); // we are done here
+              });
             } else {
               throw QRNotRecognizedError();
             }

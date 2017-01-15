@@ -23,9 +23,6 @@ import Matrix from './Matrix';
 
 const fc = FlexCount.fromAsyncStorage();
 
-Matrix.initClient().done();
-Matrix.initRoomClient().done();
-
 BleManager.start().done();
 BleManager.enableBluetooth().done();
 
@@ -42,7 +39,6 @@ const App = () =>
   </NavigationProvider>;
 
 AppRegistry.registerComponent('telemetry_ga_android', () => App);
-
 
 AsyncStorage.getItem('prosthetic_mac')
   .then(deviceId => (deviceId === null ? Promise.reject() : deviceId))
@@ -105,3 +101,12 @@ AsyncStorage.getItem('prosthetic_mac')
     },
     () => ToastAndroid.show('Prostetic id not set, check Settings', ToastAndroid.LONG)
   );
+
+AsyncStorage.getItem('matrix')
+  .then(x => (x === null ? Promise.reject() : x))
+  .then(JSON.parse)
+  .then(x =>
+    Matrix.initClient(x.home_server, JSON.stringify(x)) // FIXME: double serialization! Like double buffering, but web scale!
+      .then(() => Matrix.initRoomClient(x.room_stream_to))
+  )
+  .catch(() => ToastAndroid.show('Matrix auth data not set, check Settings', ToastAndroid.LONG));
