@@ -27,6 +27,8 @@ import org.matrix.androidsdk.rest.model.login.Credentials;
 
 import com.telemetry_ga_android.Messages.MotoricaMechanicalMessage;
 
+import java.util.ArrayList;
+
 
 class MatrixReactWrapper extends ReactContextBaseJavaModule {
 
@@ -169,6 +171,15 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
                     }
                     mxSession.getDataHandler().getStore().commit();
                     mxSession.getDataHandler().onSentEvent(event);
+
+
+                    // RESEND
+                    ArrayList<Event> resendingEventsList = new ArrayList<>(mxSession.getDataHandler().getStore().getUndeliverableEvents(roomId));
+                    if ((null != resendingEventsList) && (resendingEventsList.size() > 0)) {
+                        Log.d(TAG, "resend: " + resendingEventsList.get(0));
+                        sendEvent(resendingEventsList.get(0), promise);
+                        resendingEventsList.remove(0);
+                    }
                 }
 
                 @Override
