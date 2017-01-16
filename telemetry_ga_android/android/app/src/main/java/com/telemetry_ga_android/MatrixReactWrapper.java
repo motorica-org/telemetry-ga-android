@@ -10,7 +10,6 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableNativeMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -145,17 +144,9 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
 
     }
 
-    private void sendMessage(String type, ReadableNativeMap body, final Promise promise) {
-        MotoricaMechanicalMessage message = new MotoricaMechanicalMessage();
+    private void sendEvent(final Event event, final Promise promise) {
+        Log.d(TAG, "sendMessage: " + event.getContent().toString());
 
-        message.msgtype = type;
-        message.body = body.getString("body");
-        message.timestamp = body.getDouble("timestamp");
-        message.power = body.getInt("power");
-
-        Log.d(TAG, "sendMessage: " + message.toString());
-
-        final Event event = new Event(message, this.mxSession.getCredentials().userId, this.roomId);
         this.mxSession.getDataHandler().getStore().storeLiveRoomEvent(event);
 
         // Also see `org.matrix.androidsdk.data.Room.sendEvent()` (45fe7f983fddaec2071f0dd94dfe93cda35b8490)
@@ -176,7 +167,6 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
                     if (!mxSession.getDataHandler().getStore().doesEventExist(serverResponseEvent.eventId, roomId)) {
                         mxSession.getDataHandler().getStore().storeLiveRoomEvent(event);
                     }
-
                     mxSession.getDataHandler().getStore().commit();
                     mxSession.getDataHandler().onSentEvent(event);
                 }
@@ -207,6 +197,15 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void sendMessage(String type, ReadableMap body, Promise promise) {
-        this.sendMessage(type, (ReadableNativeMap) body, promise);
+        MotoricaMechanicalMessage message = new MotoricaMechanicalMessage();
+
+        message.msgtype = type;
+        message.body = body.getString("body");
+        message.timestamp = body.getDouble("timestamp");
+        message.power = body.getInt("power");
+
+        final Event event = new Event(message, this.mxSession.getCredentials().userId, this.roomId);
+
+        this.sendEvent(event, promise);
     }
 }
