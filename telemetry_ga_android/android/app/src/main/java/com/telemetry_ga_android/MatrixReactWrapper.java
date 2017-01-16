@@ -11,8 +11,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableNativeMap;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +26,7 @@ import org.matrix.androidsdk.rest.model.MatrixError;
 import org.matrix.androidsdk.rest.model.RoomResponse;
 import org.matrix.androidsdk.rest.model.login.Credentials;
 
-import java.util.HashMap;
-import java.util.Random;
+import com.telemetry_ga_android.Messages.MotoricaMechanicalMessage;
 
 
 class MatrixReactWrapper extends ReactContextBaseJavaModule {
@@ -149,39 +146,63 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
     }
 
     private void sendMessage(String type, ReadableNativeMap body, final Promise promise) {
-        HashMap _body = new HashMap(body.toHashMap());
-        _body.put("msgtype", type);
+        MotoricaMechanicalMessage message = new MotoricaMechanicalMessage();
 
-        JsonObject content = new Gson().toJsonTree(_body).getAsJsonObject();
+        message.msgtype = type;
+        message.body = body.getString("body");
+        message.timestamp = body.getDouble("timestamp");
+        message.power = body.getInt("power");
 
-        Log.d(TAG, "sendMessage: " + content);
+        Log.d(TAG, "sendMessage: " + message.toString());
 
-        Random r = new Random();
-        String txnid = "";
-        for (int i = 0; i <= 10; i++) {
-            txnid += (char) (r.nextInt(26) + 'a');
+        final Event event = new Event(message, this.mxSession.getCredentials().userId, this.roomId);
+        this.mxSession.getDataHandler().getStore().storeLiveRoomEvent(event);
+
+        // Also see `org.matrix.androidsdk.data.Room.sendEvent()` (45fe7f983fddaec2071f0dd94dfe93cda35b8490)
+        if (!event.isUndeliverable()) {
+            event.mSentState = Event.SentState.SENDING;
+            this.mxSession.getDataHandler().getDataRetriever().getRoomsRestClient().sendEventToRoom(event.originServerTs + "", this.roomId, event.getType(), event.getContent().getAsJsonObject(), new ApiCallback<Event>() {
+                @Override
+                public void onSuccess(Event serverResponseEvent) {
+                    // remove the tmp event
+                    mxSession.getDataHandler().getStore().deleteEvent(event);
+
+                    // update the event with the server response
+                    event.mSentState = Event.SentState.SENT;
+                    event.eventId = serverResponseEvent.eventId;
+                    event.originServerTs = System.currentTimeMillis();
+
+                    // the message echo is not yet echoed
+                    if (!mxSession.getDataHandler().getStore().doesEventExist(serverResponseEvent.eventId, roomId)) {
+                        mxSession.getDataHandler().getStore().storeLiveRoomEvent(event);
+                    }
+
+                    mxSession.getDataHandler().getStore().commit();
+                    mxSession.getDataHandler().onSentEvent(event);
+                }
+
+                @Override
+                public void onNetworkError(Exception e) {
+                    event.mSentState = Event.SentState.UNDELIVERABLE;
+                    event.unsentException = e;
+                }
+
+                @Override
+                public void onMatrixError(MatrixError e) {
+                    event.mSentState = Event.SentState.UNDELIVERABLE;
+                    event.unsentMatrixError = e;
+                }
+
+                @Override
+                public void onUnexpectedError(Exception e) {
+                    event.mSentState = Event.SentState.UNDELIVERABLE;
+                    event.unsentException = e;
+                }
+            });
         }
-        this.roomClient.sendEventToRoom(txnid, this.roomId, "m.room.message", content, new ApiCallback<Event>() {
-            @Override
-            public void onSuccess(Event event) {
-                promise.resolve(event.eventId);
-            }
 
-            @Override
-            public void onNetworkError(Exception e) {
-                promise.reject(e);
-            }
-
-            @Override
-            public void onMatrixError(MatrixError matrixError) {
-                promise.reject(matrixError.mErrorBodyAsString);
-            }
-
-            @Override
-            public void onUnexpectedError(Exception e) {
-                promise.reject(e);
-            }
-        });
+        // We resolve regardless of what happens in callback because storing the event in local storage cannot fail [citation needed], and we can resend it afterwards.
+        promise.resolve(null);
     }
 
     @ReactMethod
