@@ -2,6 +2,7 @@ package com.telemetry_ga_android;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import org.matrix.androidsdk.HomeserverConnectionConfig;
 import org.matrix.androidsdk.MXDataHandler;
 import org.matrix.androidsdk.MXSession;
+import org.matrix.androidsdk.data.Room;
 import org.matrix.androidsdk.data.store.MXFileStore;
 import org.matrix.androidsdk.rest.callback.ApiCallback;
 import org.matrix.androidsdk.rest.client.LoginRestClient;
@@ -25,7 +27,91 @@ import org.matrix.androidsdk.rest.model.MatrixError;
 import org.matrix.androidsdk.rest.model.RoomResponse;
 import org.matrix.androidsdk.rest.model.login.Credentials;
 
+import java.util.ArrayDeque;
+
 import com.telemetry_ga_android.Messages.MotoricaMechanicalMessage;
+
+
+class MatrixHelper {
+
+    private final static String TAG = "MatrixHelper";
+
+    public static void resendAll(MXSession session, String roomId) {
+        ArrayDeque<Event> resendingEventsList = new ArrayDeque<>(session.getDataHandler().getStore().getUndeliverableEvents(roomId));
+        Log.d(TAG, String.format("resendAll: there are %d undeliverable events", resendingEventsList.size()));
+
+        while (!resendingEventsList.isEmpty()) {
+            Event event = resendingEventsList.pop();
+
+            resend(session, event);
+        }
+    }
+
+    public static void resend(final MXSession session, final Event event) {
+        Log.d(TAG, "resend: " + event);
+        event.mSentState = Event.SentState.UNSENT;
+
+        // It would seem that send() does this, but, empirically, not.
+        // TODO: a thorough investigation with a debugger
+        event.originServerTs = System.currentTimeMillis();
+        session.getDataHandler().deleteRoomEvent(event);
+
+        send(session, event);
+    }
+
+    public static void send(final MXSession session, final Event event) {
+        // TODO: perhaps we can do somewhat less explicit commits here
+        Log.d(TAG, "send: " + event.getContent().toString());
+
+        session.getDataHandler().getStore().storeLiveRoomEvent(event);
+        session.getDataHandler().getStore().commit();
+
+        // Also see `org.matrix.androidsdk.data.Room.sendEvent()` (45fe7f983fddaec2071f0dd94dfe93cda35b8490)
+        if (!event.isUndeliverable()) {
+            event.mSentState = Event.SentState.SENDING;
+            session.getDataHandler().getDataRetriever().getRoomsRestClient().sendEventToRoom(event.originServerTs + "", event.roomId, event.getType(), event.getContent().getAsJsonObject(), new ApiCallback<Event>() {
+                @Override
+                public void onSuccess(Event serverResponseEvent) {
+                    // remove the tmp event
+                    session.getDataHandler().getStore().deleteEvent(event);
+
+                    // update the event with the server response
+                    event.mSentState = Event.SentState.SENT;
+                    event.eventId = serverResponseEvent.eventId;
+                    event.originServerTs = System.currentTimeMillis();
+
+                    // the message echo is not yet echoed
+                    if (!session.getDataHandler().getStore().doesEventExist(serverResponseEvent.eventId, event.roomId)) {
+                        session.getDataHandler().getStore().storeLiveRoomEvent(event);
+                    }
+                    session.getDataHandler().onSentEvent(event);
+                    session.getDataHandler().getStore().commit();
+                }
+
+                @Override
+                public void onNetworkError(Exception e) {
+                    event.mSentState = Event.SentState.UNDELIVERABLE;
+                    event.unsentException = e;
+                    session.getDataHandler().getStore().commit();
+                }
+
+                @Override
+                public void onMatrixError(MatrixError e) {
+                    event.mSentState = Event.SentState.UNDELIVERABLE;
+                    event.unsentMatrixError = e;
+                    session.getDataHandler().getStore().commit();
+                }
+
+                @Override
+                public void onUnexpectedError(Exception e) {
+                    event.mSentState = Event.SentState.UNDELIVERABLE;
+                    event.unsentException = e;
+                    session.getDataHandler().getStore().commit();
+                }
+            });
+        }
+    }
+}
 
 
 class MatrixReactWrapper extends ReactContextBaseJavaModule {
@@ -38,7 +124,7 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
     private MXSession mxSession;
     private RoomsRestClient roomClient;
 
-    private String roomId;
+    private Room room;
 
     @Override
     public String getName() {
@@ -97,6 +183,8 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
 
         this.mxSession = new MXSession(hsConfig, mxDataHandler, context);
 
+        this.mxSession.getDataHandler().getStore().open();
+
         promise.resolve(null);
     }
 
@@ -117,10 +205,38 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void initRoomClient(String roomId, final Promise promise) {
-        this.roomId = roomId;
         this.roomClient = this.mxSession.getRoomsApiClient();
 
-        this.roomClient.initialSync(this.roomId, new ApiCallback<RoomResponse>() {
+        // FIXME: a manual spinlock isn't good.
+        while (!this.mxSession.getDataHandler().getStore().isReady()) {
+            SystemClock.sleep(1000);
+            Log.w(TAG, "initRoomClient: Spinlock: Store not ready");
+        }
+
+        this.room = this.mxSession.getDataHandler().getRoom(roomId);
+        this.room.join(new ApiCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+
+            @Override
+            public void onNetworkError(Exception e) {
+                promise.reject(e);
+            }
+
+            @Override
+            public void onMatrixError(MatrixError matrixError) {
+                promise.reject(matrixError.mErrorBodyAsString);
+            }
+
+            @Override
+            public void onUnexpectedError(Exception e) {
+                promise.reject(e);
+            }
+        });
+
+        this.roomClient.initialSync(this.room.getRoomId(), new ApiCallback<RoomResponse>() {
             @Override
             public void onSuccess(RoomResponse roomResponse) {
                 promise.resolve(null);
@@ -145,53 +261,11 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
     }
 
     private void sendEvent(final Event event, final Promise promise) {
-        Log.d(TAG, "sendMessage: " + event.getContent().toString());
+        // These methods cannot fail (if the message cannot be sent, it goes to local storage - which can't fail [citation needed]).
+        // Therefore, no exception handling or the like here.
+        MatrixHelper.send(this.mxSession, event);
+        MatrixHelper.resendAll(mxSession, event.roomId); // FIXME: would probably be better off hooked to NetworkListener
 
-        this.mxSession.getDataHandler().getStore().storeLiveRoomEvent(event);
-
-        // Also see `org.matrix.androidsdk.data.Room.sendEvent()` (45fe7f983fddaec2071f0dd94dfe93cda35b8490)
-        if (!event.isUndeliverable()) {
-            event.mSentState = Event.SentState.SENDING;
-            this.mxSession.getDataHandler().getDataRetriever().getRoomsRestClient().sendEventToRoom(event.originServerTs + "", this.roomId, event.getType(), event.getContent().getAsJsonObject(), new ApiCallback<Event>() {
-                @Override
-                public void onSuccess(Event serverResponseEvent) {
-                    // remove the tmp event
-                    mxSession.getDataHandler().getStore().deleteEvent(event);
-
-                    // update the event with the server response
-                    event.mSentState = Event.SentState.SENT;
-                    event.eventId = serverResponseEvent.eventId;
-                    event.originServerTs = System.currentTimeMillis();
-
-                    // the message echo is not yet echoed
-                    if (!mxSession.getDataHandler().getStore().doesEventExist(serverResponseEvent.eventId, roomId)) {
-                        mxSession.getDataHandler().getStore().storeLiveRoomEvent(event);
-                    }
-                    mxSession.getDataHandler().getStore().commit();
-                    mxSession.getDataHandler().onSentEvent(event);
-                }
-
-                @Override
-                public void onNetworkError(Exception e) {
-                    event.mSentState = Event.SentState.UNDELIVERABLE;
-                    event.unsentException = e;
-                }
-
-                @Override
-                public void onMatrixError(MatrixError e) {
-                    event.mSentState = Event.SentState.UNDELIVERABLE;
-                    event.unsentMatrixError = e;
-                }
-
-                @Override
-                public void onUnexpectedError(Exception e) {
-                    event.mSentState = Event.SentState.UNDELIVERABLE;
-                    event.unsentException = e;
-                }
-            });
-        }
-
-        // We resolve regardless of what happens in callback because storing the event in local storage cannot fail [citation needed], and we can resend it afterwards.
         promise.resolve(null);
     }
 
@@ -204,7 +278,7 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
         message.timestamp = body.getDouble("timestamp");
         message.power = body.getInt("power");
 
-        final Event event = new Event(message, this.mxSession.getCredentials().userId, this.roomId);
+        final Event event = new Event(message, this.mxSession.getCredentials().userId, this.room.getRoomId());
 
         this.sendEvent(event, promise);
     }
