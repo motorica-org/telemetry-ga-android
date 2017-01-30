@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { AppRegistry, AsyncStorage, NativeAppEventEmitter, ToastAndroid } from 'react-native';
+import { AppRegistry, AsyncStorage, NativeAppEventEmitter, ToastAndroid, PermissionsAndroid } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 
 import {
@@ -39,6 +39,15 @@ const App = () =>
   </NavigationProvider>;
 
 AppRegistry.registerComponent('telemetry_ga_android', () => App);
+
+PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+  {
+    title: 'Bluetooth LE usage permission',
+    message: 'We need access to BLE to connect to your prosthetic. Note though it is called "location" in Android, we don\'t track your location in any way.',
+  },
+    )
+.then(result => (result !== PermissionsAndroid.RESULTS.GRANTED ? ToastAndroid.show('Bluetooth LE access restricted, can\'t connect', ToastAndroid.LONG) : true));
 
 AsyncStorage.getItem('prosthetic_mac')
   .then(deviceId => (deviceId === null ? Promise.reject() : deviceId))
