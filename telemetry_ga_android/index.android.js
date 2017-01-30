@@ -81,11 +81,12 @@ AsyncStorage.getItem('prosthetic_mac')
       });
 
       NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', (notification) => {
+        const power = parseInt(notification.value, 16); // decode from BLE's hex
         Matrix.sendMessage('motorica-org.mechanical.v1.flex',
           {
-            body: 'flex',
+            body: `Flex: ${power}`,
             timestamp: Date.now(),
-            power: parseInt(notification.value, 16), // decode from BLE's hex
+            power,
           }).done();
         fc.then((_fc) => {
           _fc.set(_fc.get() + 1).done();
