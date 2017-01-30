@@ -4,6 +4,7 @@ import {
   Dimensions,
   StyleSheet,
   ToastAndroid,
+  PermissionsAndroid,
 } from 'react-native';
 import Camera from 'react-native-camera';
 
@@ -30,6 +31,10 @@ class QRNotRecognizedError extends Error {
 // Cannot be made a stateless component due to navigator being injected via props.
 // eslint-disable-next-line react/prefer-stateless-function
 export default class extends React.Component {
+  componentWillMount() {
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA).done();
+  }
+
   render() {
     return (
       <Camera
