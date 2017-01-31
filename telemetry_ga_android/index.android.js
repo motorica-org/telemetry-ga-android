@@ -111,7 +111,7 @@ AsyncStorage.getItem('prosthetic_mac')
         isConnected = false;
       });
     },
-    () => ToastAndroid.show('Prostetic id not set, check Settings', ToastAndroid.LONG)
+    () => ToastAndroid.show(I18n.t('prosthetic_id_unset_warning'), ToastAndroid.LONG)
   );
 
 AsyncStorage.getItem('matrix')
@@ -121,4 +121,4 @@ AsyncStorage.getItem('matrix')
     Matrix.initClient(x.home_server, JSON.stringify(x)) // FIXME: double serialization! Like double buffering, but web scale!
       .then(() => Matrix.initRoomClient(x.room_stream_to))
   )
-  .catch(() => ToastAndroid.show('Matrix auth data not set, check Settings', ToastAndroid.LONG));
+  .catch(() => ToastAndroid.show(I18n.t('matrix_auth_unset_warning'), ToastAndroid.LONG));
