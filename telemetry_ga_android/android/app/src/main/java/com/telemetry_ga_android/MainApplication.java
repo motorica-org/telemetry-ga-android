@@ -14,6 +14,7 @@ import java.util.List;
 
 import it.innove.BleManagerPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
+import com.i18n.reactnativei18n.ReactNativeI18n;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -29,7 +30,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new BleManagerPackage(),
           new MatrixPackage(),
-          new RCTCameraPackage()
+          new RCTCameraPackage(),
+          new ReactNativeI18n()
       );
     }
   };

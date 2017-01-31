@@ -137,6 +137,7 @@ dependencies {
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile project(':react-native-ble-manager')
     compile project(':react-native-camera')
+    compile project(':react-native-i18n')
 
     // Matrix and co
     compile(name: 'matrix-sdk-release-0.7.4', ext: 'aar')

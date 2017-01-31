@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import Camera from 'react-native-camera';
 
+import I18n from './i18n.js';
+
 import Matrix from './Matrix';
 
 
@@ -55,17 +57,17 @@ export default class extends React.Component {
                 .then(x => AsyncStorage.setItem('matrix', x))
                 .then(() => AsyncStorage.setItem('prosthetic_mac', d.prosthetic.mac))
                 .then(() => {
-                  ToastAndroid.show(`Recognised settings for prosthetic ${d.prosthetic.mac}, saving...`, ToastAndroid.SHORT);
+                  ToastAndroid.show(I18n.t('saving_settings_for_prosthetic', {prosthetic: d.prosthetic.mac}), ToastAndroid.SHORT);
                   this.props.navigator.pop(); // we are done here
                 })
-                .catch(() => ToastAndroid.show('Bad QR code', ToastAndroid.SHORT)); // FIXME: this might be a passwordLogin, a JSON parsing or a saving error
+                .catch(() => ToastAndroid.show(I18n.t('bad_qr_warning'), ToastAndroid.SHORT)); // FIXME: this might be a passwordLogin, a JSON parsing or a saving error
             } else {
               throw QRNotRecognizedError();
             }
           } catch (e) {
             if ((e instanceof QRNotRecognizedError) ||
                 (e instanceof SyntaxError && e.message.includes('JSON'))) { // facepalm
-              ToastAndroid.show('Bad QR code', ToastAndroid.SHORT);
+              ToastAndroid.show(I18n.t('bad_qr_warning'), ToastAndroid.SHORT);
             }
           }
         }}

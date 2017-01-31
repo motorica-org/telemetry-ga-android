@@ -6,6 +6,8 @@ import SwitchingComponent from './SwitchingComponent';
 import EnlargingImage from './EnlargingImage';
 import ProgressBar from './ProgressBar';
 
+import I18n from './i18n.js';
+
 import FlexCount from './FlexCount';
 
 
@@ -41,11 +43,11 @@ export default class extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <ToolbarAndroid
-          title="Помоги монсику вырасти"
-          subtitle="силой своего лучезапястного сустава"
+          title={I18n.t('mainscreen_toolbar_title')}
+          subtitle={I18n.t('mainscreen_toolbar_subtitle')}
           style={{ backgroundColor: '#e9eaed', height: 56 }}
           actions={[
-            { title: 'Settings', icon: settingsIcon, show: 'always' },
+            { title: I18n.t('settings'), icon: settingsIcon, show: 'always' },
           ]}
           onActionSelected={
             (position) => {

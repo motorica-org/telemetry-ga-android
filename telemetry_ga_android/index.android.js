@@ -17,6 +17,8 @@ import MainScreen from './MainScreen';
 import SettingsScreen from './SettingsScreen';
 import ScanQRSettingsScreen from './ScanQRSettingsScreen';
 
+import I18n from './i18n.js';
+
 import FlexCount from './FlexCount';
 import Matrix from './Matrix';
 
@@ -43,11 +45,11 @@ AppRegistry.registerComponent('telemetry_ga_android', () => App);
 PermissionsAndroid.request(
     PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
   {
-    title: 'Bluetooth LE usage permission',
-    message: 'We need access to BLE to connect to your prosthetic. Note though it is called "location" in Android, we don\'t track your location in any way.',
+    title: I18n.t('request_access_coarse_location_title'),
+    message: I18n.t('request_access_coarse_location_message'),
   },
     )
-.then(result => (result !== PermissionsAndroid.RESULTS.GRANTED ? ToastAndroid.show('Bluetooth LE access restricted, can\'t connect', ToastAndroid.LONG) : true));
+.then(result => (result !== PermissionsAndroid.RESULTS.GRANTED ? ToastAndroid.show(I18n.t('request_access_coarse_location_restricted_warning'), ToastAndroid.LONG) : true));
 
 AsyncStorage.getItem('prosthetic_mac')
   .then(deviceId => (deviceId === null ? Promise.reject() : deviceId))
@@ -109,7 +111,7 @@ AsyncStorage.getItem('prosthetic_mac')
         isConnected = false;
       });
     },
-    () => ToastAndroid.show('Prostetic id not set, check Settings', ToastAndroid.LONG)
+    () => ToastAndroid.show(I18n.t('prosthetic_id_unset_warning'), ToastAndroid.LONG)
   );
 
 AsyncStorage.getItem('matrix')
@@ -119,4 +121,4 @@ AsyncStorage.getItem('matrix')
     Matrix.initClient(x.home_server, JSON.stringify(x)) // FIXME: double serialization! Like double buffering, but web scale!
       .then(() => Matrix.initRoomClient(x.room_stream_to))
   )
-  .catch(() => ToastAndroid.show('Matrix auth data not set, check Settings', ToastAndroid.LONG));
+  .catch(() => ToastAndroid.show(I18n.t('matrix_auth_unset_warning'), ToastAndroid.LONG));
