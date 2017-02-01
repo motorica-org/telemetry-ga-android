@@ -1,4 +1,7 @@
-export default (props) => {
-  const i = Math.trunc(props.flex_count / 25) % props.sources.length;
-  return props.sources[i];
+// @flow
+export default ({ flex_count, sources }:
+                { flex_count: number,
+                  sources: Array<ReactClass<*>> }) => {
+  const i = Math.trunc(flex_count / 25) % sources.length;
+  return sources[i];
 };
