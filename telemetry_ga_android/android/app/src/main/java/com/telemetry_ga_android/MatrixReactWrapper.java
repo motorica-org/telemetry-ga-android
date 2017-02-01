@@ -214,27 +214,6 @@ class MatrixReactWrapper extends ReactContextBaseJavaModule {
         }
 
         this.room = this.mxSession.getDataHandler().getRoom(roomId);
-        this.room.join(new ApiCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-
-            @Override
-            public void onNetworkError(Exception e) {
-                promise.reject(e);
-            }
-
-            @Override
-            public void onMatrixError(MatrixError matrixError) {
-                promise.reject(matrixError.mErrorBodyAsString);
-            }
-
-            @Override
-            public void onUnexpectedError(Exception e) {
-                promise.reject(e);
-            }
-        });
 
         this.roomClient.initialSync(this.room.getRoomId(), new ApiCallback<RoomResponse>() {
             @Override
