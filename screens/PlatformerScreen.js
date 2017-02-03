@@ -1,4 +1,5 @@
-import React, {
+import React, { Component } from 'react';
+import {
   AppRegistry,
   PanResponder,
   View,
@@ -93,7 +94,6 @@ class Clock extends React.Component {
     return null;
   }
 }
-
 
 /**
  * Game
