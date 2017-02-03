@@ -1,45 +1,141 @@
-import React, { Component } from 'react';
-import {
+import React, {
   AppRegistry,
-  StyleSheet,
-  Text,
-  View
+  PanResponder,
+  View,
 } from 'react-native';
 
-export default class extends Component {
-  render() {
+import { connect, Provider } from 'react-redux';
+import { createStore } from 'redux';
+
+import Styles from '../Styles';
+
+
+// Import from a different module for a different game!
+import { sceneReduce, Scene } from '../Fluxpy';
+
+
+/**
+ * Touch
+ *
+ * Event handler that dispatches
+ * `{ ...gestureState, type: 'TOUCH', pressed: <whether pressed> }`
+ * on touch events, where `gestureState` is given as in
+ * https://facebook.github.io/react-native/docs/panresponder.html. Doesn't
+ * actually render anything.
+ */
+
+const Touch = connect()(
+  ({ dispatch, children, ...props }) => {
+    const panGrant = (_, gestureState) =>
+      dispatch({ ...gestureState, type: 'TOUCH', pressed: true });
+    const panRelease = (_, gestureState) =>
+      dispatch({ ...gestureState, type: 'TOUCH', pressed: false });
+    const panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: panGrant,
+      onPanResponderRelease: panRelease,
+      onPanResponderTerminate: panRelease,
+      onShouldBlockNativeResponder: () => false,
+    });
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+      <View
+        {...props}
+        {...panResponder.panHandlers}
+        style={{ ...props.style, flex: 1 }}>
+        {children}
       </View>
     );
   }
+);
+
+
+/**
+ * Clock
+ *
+ * Event handler that dispatches
+ * `{ type: 'TICK', dt: <seconds since last tick> }`
+ * per animation frame. Doesn't actually render anything.
+ */
+
+@connect()
+class Clock extends React.Component {
+  componentDidMount() {
+    this._requestTick();
+  }
+
+  componentWillUnmount() {
+    if (this._tickRequestID) {
+      window.cancelAnimationFrame(this._tickRequestID);
+    }
+  }
+
+  _requestTick() {
+    if (!this._lastTickTime) {
+      this._lastTickTime = Date.now();
+    }
+    this._tickRequestID = requestAnimationFrame(this._tick.bind(this));
+  }
+
+  _tick() {
+    this._tickRequestID = undefined;
+    const currTime = Date.now();
+    this.tick(Math.min(0.05, 0.001 * (currTime - this._lastTickTime)));
+    this._lastTickTime = currTime;
+    this._requestTick();
+  }
+
+  tick(dt) {
+    this.props.dispatch({ type: 'TICK', dt });
+  }
+
+  render() {
+    return null;
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+
+/**
+ * Game
+ *
+ * Brings together event handlers and the Scene.
+ */
+
+const Game = () => (
+  <View style={Styles.container}>
+    <Clock />
+    <Scene />
+    <Touch style={Styles.container}/>
+  </View>
+);
+
+
+/**
+ * Main
+ *
+ * Initializes a Redux store and provides it to Game.
+ */
+
+const dispatchQueue = [];
+
+const queueDispatch = (action) => dispatchQueue.push(action);
+
+const mainReduce = (state, action) => {
+  const actions = [action].concat(dispatchQueue);
+  dispatchQueue.length = 0;
+  const dispatch = (action) => actions.push(action);
+  while (actions.length > 0) {
+    state = sceneReduce(state, actions.shift(), dispatch);
+  }
+  return state;
+};
+
+export default Main = () => {
+  const store = createStore(mainReduce,
+                            mainReduce(undefined, { type: 'START' }));
+  return (
+    <Provider store={store}>
+      <Game />
+    </Provider>
+  );
+};
