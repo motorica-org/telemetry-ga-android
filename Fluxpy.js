@@ -43,6 +43,7 @@ const birdReduce = defaultReducer({
       w: 41, h: 29,
       vx: 110, vy: 0,
       ay: 700, ax: 9,
+      gravityFlipped: false,
     });
   },
 
@@ -55,7 +56,7 @@ const birdReduce = defaultReducer({
         return bird.merge({
           y: bird.h / 2,
           vy: 0,
-          ay: 0, // FIXME
+          ay: !bird.gravityFlipped && -bird.ay,
         })
       }
       // bottom
@@ -63,7 +64,7 @@ const birdReduce = defaultReducer({
         return bird.merge({
           y: Styles.screenH - bird.h / 2,
           vy: 0,
-          ay: 0,
+          ay: bird.gravityFlipped && bird.ay,
         })
       }
 
@@ -108,6 +109,7 @@ const birdReduce = defaultReducer({
   TOUCH({ bird }, { pressed }) {
     return bird.merge({
       ay: bird.alive && pressed ? -(bird.ay + 100) : 700,
+      gravityFlipped: pressed,
     });
   },
 
