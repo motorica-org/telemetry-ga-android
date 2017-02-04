@@ -114,7 +114,7 @@ const Bird = connect(
                  left: x - w / 2, top: y - h / 2,
                  width: w, height: h,
                  backgroundColor: 'transparent' }}
-        source={{ uri: Media['floaty.png'] }}
+        source={ Media['floaty.png'] }
       />
     );
   }
@@ -233,7 +233,7 @@ const Pipes = connect(
                      left: x, top: bottom ? y : y - h,
                      width: 800, height: 800,
                      backgroundColor: 'transparent' }}
-            source={{ uri: Media[img] }}
+            source={ Media[img] }
           />
         );
       });
@@ -352,7 +352,7 @@ const Clouds = connect(
                        left: x, top: y,
                        width: CLOUD_WIDTH, height: CLOUD_HEIGHT,
                        backgroundColor: 'transparent' }}
-              source={{ uri: Media[img] }}
+              source={ Media[img] }
             />
           ))
         }
@@ -382,7 +382,7 @@ const Splash = connect(
                  left: (Styles.screenW - w) / 2, top: 100,
                  width: w, height: h,
                  backgroundColor: 'transparent' }}
-        source={{ uri: Media['splash.png'] }}
+        source={ Media['splash.png'] }
       />
     );
   }
@@ -409,7 +409,7 @@ const Rewind = connect(
                  left: (Styles.screenW - 30 - w), top: 42,
                  width: w, height: h,
                  backgroundColor: '#f00' }}
-        source={{ uri: Media['rewind.png'] }}
+        source={ Media['rewind.png'] }
       />
     );
   }
