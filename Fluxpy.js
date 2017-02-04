@@ -123,7 +123,7 @@ const Bird = connect(
   ({ bird }) => bird,
 )(
   ({ x, y, w, h, vx, vy }) => {
-    const rot = Math.max(-25, Math.min(vy / (vy > 0 ? 9 : 6), 50));
+    const rot = (Styles.screenH + h / 2) * y / Styles.screenH - h / 2; // map 0..y => -h/2..y
     return (
       <Image
         key="bird-image"
