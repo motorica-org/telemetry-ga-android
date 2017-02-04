@@ -108,7 +108,7 @@ const birdReduce = defaultReducer({
 
   TOUCH({ bird }, { pressed }) {
     return bird.merge({
-      ay: bird.alive && pressed ? -(bird.ay + 100) : 700,
+      ay: bird.alive && pressed ? -700 : 700,
       gravityFlipped: pressed,
     });
   },
