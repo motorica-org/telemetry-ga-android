@@ -49,9 +49,24 @@ const birdReduce = defaultReducer({
   TICK({ splash, bird, pipes: { pipes } }, { dt }, dispatch) {
     let die = false;
     if (bird.alive) {
-      if (bird.y < 0 || bird.y + bird.h > Styles.screenH) {
-        die = true;
+      // Screen borders
+      // top
+      if (bird.y - bird.h / 2 < 0) {
+        return bird.merge({
+          y: bird.h / 2,
+          vy: 0,
+          ay: 0, // FIXME
+        })
       }
+      // bottom
+      if (bird.y + bird.h / 2 > Styles.screenH) {
+        return bird.merge({
+          y: Styles.screenH - bird.h / 2,
+          vy: 0,
+          ay: 0,
+        })
+      }
+
       if (!GHOST && pipes.some(({ x, y, w, bottom }) => (
         x + w > bird.x - bird.w / 2 &&
         x < bird.x + bird.w / 2 &&
@@ -92,7 +107,7 @@ const birdReduce = defaultReducer({
 
   TOUCH({ bird }, { pressed }) {
     return bird.merge({
-      ay: bird.alive && pressed ? -1600 : 700,
+      ay: bird.alive && pressed ? -(bird.ay + 100) : 700,
     });
   },
 
@@ -191,12 +206,10 @@ const pipesReduce = defaultReducer({
   },
 
   ADD_PIPES({ pipes }) {
-    const gap = 200 + 100 * Math.random();
     const top = pipes.cursor + 100 * Math.random();
     return pipes.merge({
       pipes: pipes.pipes.concat([
-        { ...defaultPipe, y: top, bottom: false, img: pickPipeImg() },
-        { ...defaultPipe, y: top + gap, bottom: true, img: pickPipeImg() },
+        { ...defaultPipe, y: top, bottom: Math.random() > 0.5, img: pickPipeImg() },
       ]),
     });
   },
