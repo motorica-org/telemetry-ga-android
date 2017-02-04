@@ -1,4 +1,4 @@
-'use strict';
+
 
 export default {
   'cloud-1.png': require('./img/platformer/cloud-1.png'),

@@ -1,4 +1,4 @@
-'use strict';
+
 
 import React, { Component } from 'react';
 import {
@@ -18,7 +18,7 @@ import Styles from './Styles';
  * Return a reducer that runs the reducer `reductions[action]`, defaulting to
  * `reductions.DEFAULT` if not found.
  */
-const defaultReducer = (reductions) => (state, action, ...rest) =>
+const defaultReducer = reductions => (state, action, ...rest) =>
   (reductions[action.type] || reductions.DEFAULT)(state, action, ...rest);
 
 
@@ -31,7 +31,7 @@ const defaultReducer = (reductions) => (state, action, ...rest) =>
 const BIRD_FREQ = 1.2;
 const BIRD_AMP = 140;
 
-let GHOST = false;
+const GHOST = false;
 
 const birdReduce = defaultReducer({
   START() {
@@ -40,9 +40,12 @@ const birdReduce = defaultReducer({
       alive: true,
       x: Styles.screenW - 280,
       y: Styles.screenH / 2,
-      w: 41, h: 29,
-      vx: 110, vy: 0,
-      ay: 700, ax: 9,
+      w: 41,
+      h: 29,
+      vx: 110,
+      vy: 0,
+      ay: 700,
+      ax: 9,
       gravityFlipped: false,
     });
   },
@@ -57,7 +60,7 @@ const birdReduce = defaultReducer({
           y: bird.h / 2,
           vy: 0,
           ay: !bird.gravityFlipped && -bird.ay,
-        })
+        });
       }
       // bottom
       if (bird.y + bird.h / 2 > Styles.screenH) {
@@ -65,7 +68,7 @@ const birdReduce = defaultReducer({
           y: Styles.screenH - bird.h / 2,
           vy: 0,
           ay: bird.gravityFlipped && bird.ay,
-        })
+        });
       }
 
       if (!GHOST && pipes.some(({ x, y, w, bottom }) => (
@@ -77,10 +80,8 @@ const birdReduce = defaultReducer({
       ))) {
         die = true;
       }
-    } else {
-      if (bird.y > Styles.screenH + 400) {
-        dispatch({ type: 'START' });
-      }
+    } else if (bird.y > Styles.screenH + 400) {
+      dispatch({ type: 'START' });
     }
 
     let vy = bird.vy;
@@ -119,7 +120,7 @@ const birdReduce = defaultReducer({
 });
 
 const Bird = connect(
-  ({ bird }) => bird
+  ({ bird }) => bird,
 )(
   ({ x, y, w, h, vx, vy }) => {
     const rot = Math.max(-25, Math.min(vy / (vy > 0 ? 9 : 6), 50));
@@ -127,14 +128,16 @@ const Bird = connect(
       <Image
         key="bird-image"
         style={{ position: 'absolute',
-                 transform: [{ rotate: rot + 'deg' }],
-                 left: x - w / 2, top: y - h / 2,
-                 width: w, height: h,
-                 backgroundColor: 'transparent' }}
+          transform: [{ rotate: `${rot}deg` }],
+          left: x - w / 2,
+          top: y - h / 2,
+          width: w,
+          height: h,
+          backgroundColor: 'transparent' }}
         source={ Media['floaty.png'] }
       />
     );
-  }
+  },
 );
 
 
@@ -146,8 +149,10 @@ const Bird = connect(
  */
 
 const defaultPipe = {
-  x: Styles.screenW + 2, y: -2,
-  w: 58, h: 800,
+  x: Styles.screenW + 2,
+  y: -2,
+  w: 58,
+  h: 800,
   bottom: false,
 };
 
@@ -179,7 +184,7 @@ const pipesReduce = defaultReducer({
       dispatch({ type: 'ADD_PIPES' });
     }
 
-    let cursorV = Math.random() * (pipes.cursorDir ? 1 : -1) * 220;
+    const cursorV = Math.random() * (pipes.cursorDir ? 1 : -1) * 220;
     let cursorDir;
     if (pipes.cursor < 40) {
       cursorDir = true;
@@ -201,9 +206,9 @@ const pipesReduce = defaultReducer({
       distance: (pipes.distance < 0 ?
                  240 * Math.random() + 70 :
                  pipes.distance - bird.vx * dt),
-      pipes: pipes.pipes.map((pipe) => pipe.merge({
+      pipes: pipes.pipes.map(pipe => pipe.merge({
         x: pipe.x - bird.vx * dt,
-      })).filter((pipe) => pipe.x + pipe.w > 0),
+      })).filter(pipe => pipe.x + pipe.w > 0),
     });
   },
 
@@ -223,14 +228,14 @@ const pipesReduce = defaultReducer({
 
 // Ensure a constant-ish number of components by rendering extra
 // off-screen pipes
-let maxNumPipes = pipeImgs.reduce((o, img) => ({ ...o, [img]: 10 }), {});
+const maxNumPipes = pipeImgs.reduce((o, img) => ({ ...o, [img]: 10 }), {});
 const Pipes = connect(
-  ({ pipes: { cursor, pipes } }) => Immutable({ cursor, pipes })
+  ({ pipes: { cursor, pipes } }) => Immutable({ cursor, pipes }),
 )(
   ({ cursor, pipes }) => {
     const pipesByImg = {};
-    pipeImgs.forEach((img) => pipesByImg[img] = []);
-    pipes.forEach((pipe) => pipesByImg[pipe.img].push(pipe));
+    pipeImgs.forEach(img => pipesByImg[img] = []);
+    pipes.forEach(pipe => pipesByImg[pipe.img].push(pipe));
     pipeImgs.forEach((img) => {
       const extraPipe = { ...defaultPipe, img };
       maxNumPipes[img] = Math.max(maxNumPipes[img], pipesByImg[img].length);
@@ -245,22 +250,25 @@ const Pipes = connect(
           <Image
             key={`pipe-image-${img}-${i}`}
             style={{ position: 'absolute',
-                     left: x, top: bottom ? y : y - h,
-                     width: 800, height: 800,
-                     backgroundColor: 'transparent' }}
+              left: x,
+              top: bottom ? y : y - h,
+              width: 800,
+              height: 800,
+              backgroundColor: 'transparent' }}
             source={ Media[img] }
-          />
+          />,
         );
       });
     });
     return (
       <View
         key="pipes-container"
-        style={Styles.container}>
+        style={Styles.container}
+      >
         {elems}
       </View>
     );
-  }
+  },
 );
 
 
@@ -283,7 +291,7 @@ const scoreReduce = defaultReducer({
 });
 
 const Score = connect(
-  ({ splash, score }) => Immutable({ splash, score: Math.floor(score) })
+  ({ splash, score }) => Immutable({ splash, score: Math.floor(score) }),
 )(
   ({ splash, score }) => {
     if (splash) {
@@ -291,15 +299,16 @@ const Score = connect(
     }
 
     return (
-        <View style={styles.scoreContainer}>
-          <Text
-            key="score-text"
-            style={styles.score}>
-            {score}
-          </Text>
-        </View>
+      <View style={styles.scoreContainer}>
+        <Text
+          key="score-text"
+          style={styles.score}
+        >
+          {score}
+        </Text>
+      </View>
     );
-  }
+  },
 );
 
 
@@ -320,7 +329,7 @@ const CLOUD_HEIGHT = 142;
 const cloudReduce = defaultReducer({
   START() {
     return Immutable({
-      clouds: cloudImgs.map((img) => ({
+      clouds: cloudImgs.map(img => ({
         x: Styles.screenW * 3 * Math.random(),
         y: Styles.screenH * Math.random() - CLOUD_HEIGHT / 2,
         vxFactor: 0.1 + 0.2 * Math.random(),
@@ -352,28 +361,29 @@ const cloudReduce = defaultReducer({
 });
 
 const Clouds = connect(
-  ({ clouds: { clouds }}) => Immutable({ clouds })
+  ({ clouds: { clouds } }) => Immutable({ clouds }),
 )(
-  ({ clouds }) => {
-    return (
-      <View
-        key="clouds-container"
-        style={Styles.container}>
-        {
+  ({ clouds }) => (
+    <View
+      key="clouds-container"
+      style={Styles.container}
+    >
+      {
           clouds.asMutable().map(({ x, y, img }) => (
             <Image
               key={`cloud-image-${img}`}
               style={{ position: 'absolute',
-                       left: x, top: y,
-                       width: CLOUD_WIDTH, height: CLOUD_HEIGHT,
-                       backgroundColor: 'transparent' }}
+                left: x,
+                top: y,
+                width: CLOUD_WIDTH,
+                height: CLOUD_HEIGHT,
+                backgroundColor: 'transparent' }}
               source={ Media[img] }
             />
           ))
         }
-      </View>
-    );
-  }
+    </View>
+    ),
 );
 
 
@@ -382,25 +392,28 @@ const Clouds = connect(
  */
 
 const Splash = connect(
-  ({ splash }) => Immutable({ splash })
+  ({ splash }) => Immutable({ splash }),
 )(
   ({ splash }) => {
     if (!splash) {
       return <View key="splash-empty">{null}</View>;
     }
 
-    const w = 398, h = 202;
+    const w = 398,
+      h = 202;
     return (
       <Image
         key="splash-image"
         style={{ position: 'absolute',
-                 left: (Styles.screenW - w) / 2, top: 100,
-                 width: w, height: h,
-                 backgroundColor: 'transparent' }}
+          left: (Styles.screenW - w) / 2,
+          top: 100,
+          width: w,
+          height: h,
+          backgroundColor: 'transparent' }}
         source={ Media['splash.png'] }
       />
     );
-  }
+  },
 );
 
 
@@ -409,25 +422,28 @@ const Splash = connect(
  */
 
 const Rewind = connect(
-  ({ reverse }) => Immutable({ reverse })
+  ({ reverse }) => Immutable({ reverse }),
 )(
   ({ reverse }) => {
     if (!reverse) {
       return <View key="rewind-empty">{null}</View>;
     }
 
-    const w = 36, h = 36;
+    const w = 36,
+      h = 36;
     return (
       <Image
         key="rewind-image"
         style={{ position: 'absolute',
-                 left: (Styles.screenW - 30 - w), top: 42,
-                 width: w, height: h,
-                 backgroundColor: '#f00' }}
+          left: (Styles.screenW - 30 - w),
+          top: 42,
+          width: w,
+          height: h,
+          backgroundColor: '#f00' }}
         source={ Media['rewind.png'] }
       />
     );
-  }
+  },
 );
 
 
@@ -475,7 +491,8 @@ const sceneReduce = (state = Immutable({}), action, dispatch) => {
 const Scene = () => (
   <View
     key="scene-container"
-    style={[Styles.container, { backgroundColor: '#f5fcff' }]}>
+    style={[Styles.container, { backgroundColor: '#f5fcff' }]}
+  >
     <Clouds />
     <Pipes />
     <Bird />
