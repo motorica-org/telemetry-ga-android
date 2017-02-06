@@ -105,7 +105,7 @@ const birdReduce = defaultReducer({
            Math.min(-bird.vx / 2, -0.25 * bird.vx * bird.vx / (bird.x - bird.w)) :
            bird.ax),
       ay: die ? 700 : bird.ay,
-      tickCount: bird.tickCount > 4 ? 0 : bird.tickCount + 1,
+      tickCount: bird.tickCount > 10 ? 0 : bird.tickCount + 1,
     });
   },
 
@@ -130,17 +130,14 @@ const Bird = connect(
       <Image
         key="bird-image"
         style={{ position: 'absolute',
-          transform: [
-            { scaleX: nearBorder ? tickCount / 2 : 1 },
-            // Convert vertical position (i.e. `y` + account for `h`) => -1..1
-            { scaleY: (((y - (h / 2)) / (Styles.screenH - h)) * 2) - 1 }
-          ],
+          // Convert vertical position (i.e. `y` + account for `h`) => -1..1
+          transform: [{ scaleY: (((y - (h / 2)) / (Styles.screenH - h)) * 2) - 1 }],
           left: x - w / 2,
           top: y - h / 2,
           width: w,
           height: h,
-          backgroundColor: nearBorder ? 'red' : 'transparent' }}
-        source={ Media['floaty.png'] }
+          backgroundColor: 'transparent' }}
+        source={ Media[tickCount < 5 && nearBorder ? 'floaty.png' : 'floaty2.png'] }
       />
     );
   },
