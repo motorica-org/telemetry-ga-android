@@ -1,5 +1,3 @@
-
-
 import React, { Component } from 'react';
 import {
   Image,
@@ -56,7 +54,7 @@ const birdReduce = defaultReducer({
     if (bird.alive) {
       // Screen borders
       // top
-      if (bird.y - bird.h / 2 < 0) {
+      if (bird.y - (bird.h / 2) < 0) {
         return bird.merge({
           y: bird.h / 2,
           vy: 0,
@@ -64,20 +62,20 @@ const birdReduce = defaultReducer({
         });
       }
       // bottom
-      if (bird.y + bird.h / 2 > Styles.screenH) {
+      if (bird.y + (bird.h / 2) > Styles.screenH) {
         return bird.merge({
-          y: Styles.screenH - bird.h / 2,
+          y: Styles.screenH - (bird.h / 2),
           vy: 0,
           ay: bird.gravityFlipped && bird.ay,
         });
       }
 
       if (!GHOST && pipes.some(({ x, y, w, bottom }) => (
-        x + w > bird.x - bird.w / 2 &&
-        x < bird.x + bird.w / 2 &&
+        x + w > bird.x - (bird.w / 2) &&
+        x < bird.x + (bird.w / 2) &&
         (bottom ?
-         bird.y + bird.h / 2 > y :
-         bird.y - bird.h / 2 < y)
+         bird.y + (bird.h / 2) > y :
+         bird.y - (bird.h / 2) < y)
       ))) {
         die = true;
       }
@@ -124,7 +122,7 @@ const birdReduce = defaultReducer({
 const Bird = connect(
   ({ bird }) => bird,
 )(
-  ({ x, y, w, h, vx, vy, tickCount }) => {
+  ({ x, y, w, h, tickCount }) => {
     const nearBorder = y - h / 2 < 5 || y + h / 2 - Styles.screenH > -5;
     return (
       <Image
@@ -137,7 +135,7 @@ const Bird = connect(
           width: w,
           height: h,
           backgroundColor: 'transparent' }}
-        source={ Media[tickCount < 5 && nearBorder ? 'floaty.png' : 'floaty2.png'] }
+        source={Media[tickCount < 5 && nearBorder ? 'floaty.png' : 'floaty2.png']}
       />
     );
   },
@@ -235,7 +233,7 @@ const maxNumPipes = pipeImgs.reduce((o, img) => ({ ...o, [img]: 10 }), {});
 const Pipes = connect(
   ({ pipes: { cursor, pipes } }) => Immutable({ cursor, pipes }),
 )(
-  ({ cursor, pipes }) => {
+  ({ pipes }) => {
     const pipesByImg = {};
     pipeImgs.forEach(img => pipesByImg[img] = []);
     pipes.forEach(pipe => pipesByImg[pipe.img].push(pipe));
@@ -258,7 +256,7 @@ const Pipes = connect(
               width: 800,
               height: 800,
               backgroundColor: 'transparent' }}
-            source={ Media[img] }
+            source={Media[img]}
           />,
         );
       });
@@ -341,7 +339,7 @@ const cloudReduce = defaultReducer({
     });
   },
 
-  TICK({ bird, clouds }, { dt }, dispatch) {
+  TICK({ bird, clouds }, { dt }) {
     return clouds.merge({
       clouds: clouds.clouds.map((cloud) => {
         if (cloud.x + CLOUD_WIDTH > 0) {
@@ -381,7 +379,7 @@ const Clouds = connect(
                 width: CLOUD_WIDTH,
                 height: CLOUD_HEIGHT,
                 backgroundColor: 'transparent' }}
-              source={ Media[img] }
+              source={Media[img]}
             />
           ))
         }
@@ -402,8 +400,8 @@ const Splash = connect(
       return <View key="splash-empty">{null}</View>;
     }
 
-    const w = 398,
-      h = 202;
+    const w = 398;
+    const h = 202;
     return (
       <Image
         key="splash-image"
@@ -413,7 +411,7 @@ const Splash = connect(
           width: w,
           height: h,
           backgroundColor: 'transparent' }}
-        source={ Media['splash.png'] }
+        source={Media['splash.png']}
       />
     );
   },
@@ -432,8 +430,8 @@ const Rewind = connect(
       return <View key="rewind-empty">{null}</View>;
     }
 
-    const w = 36,
-      h = 36;
+    const w = 36;
+    const h = 36;
     return (
       <Image
         key="rewind-image"
@@ -443,7 +441,7 @@ const Rewind = connect(
           width: w,
           height: h,
           backgroundColor: '#f00' }}
-        source={ Media['rewind.png'] }
+        source={Media['rewind.png']}
       />
     );
   },

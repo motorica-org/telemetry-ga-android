@@ -1,5 +1,3 @@
-
-
 import Dimensions from 'Dimensions';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
