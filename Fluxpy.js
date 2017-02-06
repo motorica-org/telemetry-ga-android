@@ -123,12 +123,12 @@ const Bird = connect(
   ({ bird }) => bird,
 )(
   ({ x, y, w, h, vx, vy }) => {
-    const rot = (Styles.screenH + h / 2) * y / Styles.screenH - h / 2; // map 0..y => -h/2..y
     return (
       <Image
         key="bird-image"
         style={{ position: 'absolute',
-          transform: [{ rotate: `${rot}deg` }],
+          // Convert vertical position (i.e. `y` + account for `h`) => -1..1
+          transform: [{ scaleY: (((y - (h / 2)) / (Styles.screenH - h)) * 2) - 1 }],
           left: x - w / 2,
           top: y - h / 2,
           width: w,
