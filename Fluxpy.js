@@ -123,6 +123,7 @@ const Bird = connect(
   ({ bird }) => bird,
 )(
   ({ x, y, w, h, vx, vy }) => {
+    const nearBorder = y - h / 2 < 5 || y + h / 2 - Styles.screenH > -5;
     return (
       <Image
         key="bird-image"
@@ -133,7 +134,7 @@ const Bird = connect(
           top: y - h / 2,
           width: w,
           height: h,
-          backgroundColor: 'transparent' }}
+          backgroundColor: nearBorder ? 'red' : 'transparent' }}
         source={ Media['floaty.png'] }
       />
     );
