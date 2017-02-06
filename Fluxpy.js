@@ -47,6 +47,7 @@ const birdReduce = defaultReducer({
       ay: 700,
       ax: 9,
       gravityFlipped: false,
+      tickCount: 0,
     });
   },
 
@@ -104,6 +105,7 @@ const birdReduce = defaultReducer({
            Math.min(-bird.vx / 2, -0.25 * bird.vx * bird.vx / (bird.x - bird.w)) :
            bird.ax),
       ay: die ? 700 : bird.ay,
+      tickCount: bird.tickCount > 4 ? 0 : bird.tickCount + 1,
     });
   },
 
@@ -122,14 +124,17 @@ const birdReduce = defaultReducer({
 const Bird = connect(
   ({ bird }) => bird,
 )(
-  ({ x, y, w, h, vx, vy }) => {
+  ({ x, y, w, h, vx, vy, tickCount }) => {
     const nearBorder = y - h / 2 < 5 || y + h / 2 - Styles.screenH > -5;
     return (
       <Image
         key="bird-image"
         style={{ position: 'absolute',
-          // Convert vertical position (i.e. `y` + account for `h`) => -1..1
-          transform: [{ scaleY: (((y - (h / 2)) / (Styles.screenH - h)) * 2) - 1 }],
+          transform: [
+            { scaleX: nearBorder ? tickCount / 2 : 1 },
+            // Convert vertical position (i.e. `y` + account for `h`) => -1..1
+            { scaleY: (((y - (h / 2)) / (Styles.screenH - h)) * 2) - 1 }
+          ],
           left: x - w / 2,
           top: y - h / 2,
           width: w,
