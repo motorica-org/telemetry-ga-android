@@ -38,7 +38,7 @@ class MatrixHelper {
 
     public static void resendAll(MXSession session, String roomId) {
         ArrayDeque<Event> resendingEventsList = new ArrayDeque<>(session.getDataHandler().getStore().getUndeliverableEvents(roomId));
-        Log.d(TAG, String.format("resendAll: there are %d undeliverable events", resendingEventsList.size()));
+        Log.d(TAG, String.format("resendAll: there are %d stored undeliverable events", resendingEventsList.size())); // does not include events already in UnsentEventsManager
 
         while (!resendingEventsList.isEmpty()) {
             Event event = resendingEventsList.pop();
