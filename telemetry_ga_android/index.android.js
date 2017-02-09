@@ -13,13 +13,13 @@ import {
   StackNavigation,
 } from '@exponent/ex-navigation';
 
-import MainScreen from './MainScreen';
-import SettingsScreen from './SettingsScreen';
-import ScanQRSettingsScreen from './ScanQRSettingsScreen';
+import MainScreen from './screens/MainScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import ScanQRSettingsScreen from './screens/ScanQRSettingsScreen';
 
 import I18n from './i18n.js';
 
-import FlexCount from './FlexCount';
+import FlexCount from './components/FlexCount';
 import Matrix from './Matrix';
 
 

@@ -10,9 +10,9 @@ import {
 } from 'react-native';
 import Camera from 'react-native-camera';
 
-import I18n from './i18n.js';
+import I18n from '../i18n.js';
 
-import Matrix from './Matrix';
+import Matrix from '../Matrix';
 
 
 const styles = StyleSheet.create({

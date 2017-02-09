@@ -2,19 +2,19 @@ import React from 'react';
 
 import { View, ScrollView, ToolbarAndroid, NativeAppEventEmitter } from 'react-native';
 
-import SwitchingComponent from './SwitchingComponent';
-import EnlargingImage from './EnlargingImage';
-import ProgressBar from './ProgressBar';
+import SwitchingComponent from '../components/SwitchingComponent';
+import EnlargingImage from '../components/EnlargingImage';
+import ProgressBar from '../components/ProgressBar';
 
-import I18n from './i18n.js';
+import I18n from '../i18n.js';
 
-import FlexCount from './FlexCount';
+import FlexCount from '../components/FlexCount';
 
 
-const monsikPinkSmall = require('./img/monsik/pink/small.png');
-const monsikPinkMedium = require('./img/monsik/pink/medium.png');
-const monsikPinkBig = require('./img/monsik/pink/big.png');
-const settingsIcon = require('./img/ic_settings_black_24dp.png');
+const monsikPinkSmall = require('../img/monsik/pink/small.png');
+const monsikPinkMedium = require('../img/monsik/pink/medium.png');
+const monsikPinkBig = require('../img/monsik/pink/big.png');
+const settingsIcon = require('../img/ic_settings_black_24dp.png');
 
 const fc = FlexCount.fromAsyncStorage();
 
