@@ -5,7 +5,6 @@ stages:
 
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
-  - cd telemetry_ga_android/
   - chmod +x ./android/gradlew
 
 cache:
@@ -24,4 +23,4 @@ build:
     - ./gradlew assembleRelease
   artifacts:
     paths:
-      - telemetry_ga_android/android/app/build/outputs/apk/app-debug.apk
+      - android/app/build/outputs/apk/app-debug.apk
