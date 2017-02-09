@@ -20,6 +20,8 @@ build:
     - yarn install
     - cd android/
     - ./gradlew assembleDebug
+    # even though we don't do anything with the release build as of now, we still get to know if it built at all - and, unlike debug, it also builds JS
+    - ./gradlew assembleRelease
   artifacts:
     paths:
       - telemetry_ga_android/android/app/build/outputs/apk/app-debug.apk
