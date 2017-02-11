@@ -21,7 +21,8 @@ I18n.translations = {
     settings: 'Settings',
     scanqrsettings: 'Scan QR-encoded settings',
 
-    saving_settings_for_prosthetic: 'Recognised settings for prosthetic {{prosthetic}}, saving...'
+    saving_settings_for_prosthetic: `Recognised settings for prosthetic {{prosthetic}}, saving...
+Restart the app for settings to take effect.`,
   },
   ru: {
     request_access_coarse_location_title: 'Разрешение на использование Bluetooth LE',
@@ -40,8 +41,9 @@ I18n.translations = {
     settings: 'Настройки',
     scanqrsettings: 'Считать настройки с QR-кода',
 
-    saving_settings_for_prosthetic: 'Нашёл настройки для протеза {{prosthetic}}, сохраняю...'
-  }
+    saving_settings_for_prosthetic: `Нашёл настройки для протеза {{prosthetic}}, сохраняю...
+Перезагрузите приложение, чтобы начать работу.`,
+  },
 };
 
 
