@@ -6,7 +6,7 @@ import SwitchingComponent from '../components/SwitchingComponent';
 import EnlargingImage from '../components/EnlargingImage';
 import ProgressBar from '../components/ProgressBar';
 
-import I18n from '../i18n.js';
+import I18n from '../i18n';
 
 import FlexCount from '../components/FlexCount';
 
@@ -27,7 +27,7 @@ export default class extends React.Component {
     };
 
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
-      () => { this.setState({ flex_count: this.state.flex_count + 1 }); }
+      () => { this.setState({ flex_count: this.state.flex_count + 1 }); },
     );
   }
 

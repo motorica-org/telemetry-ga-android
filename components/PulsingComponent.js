@@ -12,7 +12,7 @@ export default class extends React.Component {
     NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic',
       () => {
         this.pulse();
-      }
+      },
     );
   }
 
@@ -23,7 +23,7 @@ export default class extends React.Component {
       {
         toValue: 1.0,
         duration: 500,
-      }
+      },
     ).start();
   }
 
@@ -44,6 +44,6 @@ export default class extends React.Component {
       >
         {this.props.sources}
       </Animated.View>
-      );
+    );
   }
 }

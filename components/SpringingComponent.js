@@ -14,7 +14,7 @@ export default class extends React.Component {
       () => {
         this.setState({ flex_count: this.state.flex_count += 1 });
         this.spring();
-      }
+      },
     );
   }
 
@@ -31,7 +31,7 @@ export default class extends React.Component {
       this.state.springValue,
       {
         toValue: 0.025 * this.state.flex_count,
-      }
+      },
     ).start();
   }
 
@@ -49,6 +49,6 @@ export default class extends React.Component {
       >
         {this.props.sources}
       </Animated.View>
-      );
+    );
   }
 }

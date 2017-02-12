@@ -17,7 +17,7 @@ import MainScreen from './screens/MainScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import ScanQRSettingsScreen from './screens/ScanQRSettingsScreen';
 
-import I18n from './i18n.js';
+import I18n from './i18n';
 
 import FlexCount from './components/FlexCount';
 import Matrix from './Matrix';
@@ -111,7 +111,7 @@ AsyncStorage.getItem('prosthetic_mac')
         isConnected = false;
       });
     },
-    () => ToastAndroid.show(I18n.t('prosthetic_id_unset_warning'), ToastAndroid.LONG)
+    () => ToastAndroid.show(I18n.t('prosthetic_id_unset_warning'), ToastAndroid.LONG),
   );
 
 AsyncStorage.getItem('matrix')
@@ -119,6 +119,6 @@ AsyncStorage.getItem('matrix')
   .then(JSON.parse)
   .then(x =>
     Matrix.initClient(x.home_server, JSON.stringify(x)) // FIXME: double serialization! Like double buffering, but web scale!
-      .then(() => Matrix.initRoomClient(x.room_stream_to))
+      .then(() => Matrix.initRoomClient(x.room_stream_to)),
   )
   .catch(() => ToastAndroid.show(I18n.t('matrix_auth_unset_warning'), ToastAndroid.LONG));
