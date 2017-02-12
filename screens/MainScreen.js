@@ -32,5 +32,10 @@ export default props =>
         title={I18n.t('play_tamagochi')}
         color='#c2185b'
       />
+      <Button
+        onPress={() => props.navigator.push(props.navigator.router.getRoute('platformer'))}
+        title={I18n.t('play_platformer')}
+        color='#00796b'
+      />
     </View>
   </View>;

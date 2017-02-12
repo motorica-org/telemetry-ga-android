@@ -25,6 +25,7 @@ I18n.translations = {
 Restart the app for settings to take effect.`,
 
     play_tamagochi: 'Play tamagochi',
+    play_platformer: 'Play platformer',
   },
   ru: {
     request_access_coarse_location_title: 'Разрешение на использование Bluetooth LE',
@@ -47,6 +48,7 @@ Restart the app for settings to take effect.`,
 Перезагрузите приложение, чтобы начать работу.`,
 
     play_tamagochi: 'Играть в тамагочи',
+    play_platformer: 'Играть в платформер',
   },
 };
 
