@@ -14,6 +14,7 @@ import {
 } from '@exponent/ex-navigation';
 
 import MainScreen from './screens/MainScreen';
+import TamagochiScreen from './screens/TamagochiScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import ScanQRSettingsScreen from './screens/ScanQRSettingsScreen';
 
@@ -31,6 +32,7 @@ BleManager.enableBluetooth().done();
 
 const Router = createRouter(() => ({
   main: () => MainScreen,
+  tamagochi: () => TamagochiScreen,
   settings: () => SettingsScreen,
   scanqrsettings: () => ScanQRSettingsScreen,
 }));

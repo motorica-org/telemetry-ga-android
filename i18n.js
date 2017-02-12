@@ -23,6 +23,8 @@ I18n.translations = {
 
     saving_settings_for_prosthetic: `Recognised settings for prosthetic {{prosthetic}}, saving...
 Restart the app for settings to take effect.`,
+
+    play_tamagochi: 'Play tamagochi',
   },
   ru: {
     request_access_coarse_location_title: 'Разрешение на использование Bluetooth LE',
@@ -43,6 +45,8 @@ Restart the app for settings to take effect.`,
 
     saving_settings_for_prosthetic: `Нашёл настройки для протеза {{prosthetic}}, сохраняю...
 Перезагрузите приложение, чтобы начать работу.`,
+
+    play_tamagochi: 'Играть в тамагочи',
   },
 };
 
