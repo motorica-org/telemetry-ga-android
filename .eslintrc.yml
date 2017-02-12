@@ -11,3 +11,6 @@ rules:
   radix:
     - error
     - as-needed
+  react/jsx-filename-extension:
+    - error
+    - extensions: ['.js', '.jsx']
