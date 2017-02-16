@@ -27,7 +27,7 @@ const defaultReducer = reductions => (state, action, ...rest) =>
  */
 
 const BIRD_FREQ = 1.2;
-const BIRD_AMP = 140;
+const BIRD_AMP = Styles.screenH * (3 / 5);
 
 const GHOST = false;
 
