@@ -7,8 +7,7 @@ export default {
   'cloud-4.png': require('./img/platformer/cloud-4.png'),
   'floaty.png': require('./img/platformer/floaty.png'),
   'floaty2.png': require('./img/platformer/floaty2.png'),
-  'pillar-1.png': require('./img/platformer/pillar-1.png'),
-  'pillar-2.png': require('./img/platformer/pillar-2.png'),
+  'box.png': require('./img/platformer/box.png'),
   'rewind.png': require('./img/platformer/rewind.png'),
   'splash.png': require('./img/platformer/splash.png'),
 };

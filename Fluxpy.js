@@ -152,14 +152,13 @@ const Bird = connect(
 const defaultPipe = {
   x: Styles.screenW + 2,
   y: -2,
-  w: 58,
-  h: 800,
+  w: 60,
+  h: 60,
   bottom: false,
 };
 
 const pipeImgs = [
-  'pillar-1.png',
-  'pillar-2.png',
+  'box.png',
 ];
 
 const pickPipeImg = () =>
@@ -214,10 +213,11 @@ const pipesReduce = defaultReducer({
   },
 
   ADD_PIPES({ pipes }) {
-    const top = pipes.cursor + 100 * Math.random();
+    const bottom = Math.random() > 0.5;
     return pipes.merge({
       pipes: pipes.pipes.concat([
-        { ...defaultPipe, y: top, bottom: Math.random() > 0.5, img: pickPipeImg() },
+        // Makes sense for non-scalable objects (as in boxes and not f.i. pipes).
+        { ...defaultPipe, y: bottom ? Styles.screenH - 60 : 60, bottom, img: pickPipeImg() }, // FIXME: hardcoded height
       ]),
     });
   },
@@ -253,8 +253,8 @@ const Pipes = connect(
             style={{ position: 'absolute',
               left: x,
               top: bottom ? y : y - h,
-              width: 800,
-              height: 800,
+              width: w,
+              height: h,
               backgroundColor: 'transparent' }}
             source={Media[img]}
           />,
