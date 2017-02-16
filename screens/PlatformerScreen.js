@@ -3,6 +3,7 @@ import {
   AppRegistry,
   PanResponder,
   View,
+  NativeAppEventEmitter,
 } from 'react-native';
 
 import { connect, Provider } from 'react-redux';
@@ -29,22 +30,11 @@ import { sceneReduce, Scene } from '../Fluxpy';
 
 const Touch = connect()(
   ({ dispatch, children, ...props }) => {
-    const panGrant = (_, gestureState) =>
-      dispatch({ ...gestureState, type: 'TOUCH', pressed: true });
-    const panRelease = (_, gestureState) =>
-      dispatch({ ...gestureState, type: 'TOUCH', pressed: false });
-    const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: panGrant,
-      onPanResponderRelease: panRelease,
-      onPanResponderTerminate: panRelease,
-      onShouldBlockNativeResponder: () => false,
-    });
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => dispatch({ type: 'TOUCH' }));
 
     return (
       <View
         {...props}
-        {...panResponder.panHandlers}
         style={{ ...props.style, flex: 1 }}>
         {children}
       </View>

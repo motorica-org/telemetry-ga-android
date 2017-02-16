@@ -108,10 +108,10 @@ const birdReduce = defaultReducer({
     });
   },
 
-  TOUCH({ bird }, { pressed }) {
+  TOUCH({ bird }) {
     return bird.merge({
-      ay: bird.alive && pressed ? -700 : 700,
-      gravityFlipped: pressed,
+      ay: !bird.gravityFlipped ? -700 : 700,
+      gravityFlipped: !bird.gravityFlipped,
     });
   },
 
@@ -500,8 +500,8 @@ const sceneReduce = (state = Immutable({}), action, dispatch) => {
 
     case 'TOUCH':
       newState = newState.merge({
-        splash: state.splash && !action.pressed,
-        reverse: action.pressed && !state.bird.alive,
+        splash: null,
+        reverse: !state.bird.alive,
       });
       break;
   }
