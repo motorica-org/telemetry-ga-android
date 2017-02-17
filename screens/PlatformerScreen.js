@@ -8,6 +8,8 @@ import {
 import { connect, Provider } from 'react-redux';
 import { createStore } from 'redux';
 
+import KeepAwake from 'react-native-keep-awake';
+
 import Styles from '../Styles';
 
 
@@ -106,6 +108,7 @@ const Game = () => (
     <Clock />
     <Scene />
     <Touch style={Styles.container}/>
+    <KeepAwake />
   </View>
 );
 

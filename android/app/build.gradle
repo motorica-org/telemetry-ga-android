@@ -143,6 +143,7 @@ dependencies {
     compile project(':react-native-ble-manager')
     compile project(':react-native-camera')
     compile project(':react-native-i18n')
+    compile project(':react-native-keep-awake')
 
     // Matrix and co
     compile(name: 'matrix-sdk-release-0.7.4', ext: 'aar')

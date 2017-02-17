@@ -2931,6 +2931,10 @@ react-native-i18n@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-i18n/-/react-native-i18n-1.0.0.tgz#0c407d9ebb846aae1aa5e05de6503008553f02fd"
 
+react-native-keep-awake@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-keep-awake/-/react-native-keep-awake-2.0.2.tgz#35abd377aaa8a7a9f042db451dd88ad9ad550d6a"
+
 react-native-tab-view@0.0.52:
   version "0.0.52"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-0.0.52.tgz#61655f93974ff4f26f02bd739566848984ad53c7"
