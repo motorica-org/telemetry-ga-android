@@ -432,6 +432,17 @@ const Splash = connect(
 );
 
 
+const Background = () =>
+  <Image
+    style={{
+      flex: 1,
+      width: null,
+      height: null,
+    }}
+    resizeMode="cover"
+    source={Media['background.png']}
+  />;
+
 /**
  * Rewind
  */
@@ -506,8 +517,9 @@ const sceneReduce = (state = Immutable({}), action, dispatch) => {
 const Scene = () => (
   <View
     key="scene-container"
-    style={[Styles.container, { backgroundColor: '#f5fcff' }]}
+    style={[Styles.container]}
   >
+    <Background />
     <Clouds />
     <Pipes />
     <Bird />
