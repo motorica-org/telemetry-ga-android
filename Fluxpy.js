@@ -9,6 +9,7 @@ import {
 import { connect } from 'react-redux';
 import Immutable from 'seamless-immutable';
 
+import I18n from './i18n';
 import Media from './Media';
 import Styles from './Styles';
 
@@ -395,26 +396,39 @@ const Clouds = connect(
 const Splash = connect(
   ({ splash }) => Immutable({ splash }),
 )(
-  ({ splash }) => {
-    if (!splash) {
-      return <View key="splash-empty">{null}</View>;
-    }
-
-    const w = 398;
-    const h = 202;
-    return (
-      <Image
+  ({ splash }) =>
+    !splash ?
+      <View key="splash-empty" /> :
+      <View
         key="splash-image"
-        style={{ position: 'absolute',
-          left: (Styles.screenW - w) / 2,
-          top: 100,
-          width: w,
-          height: h,
-          backgroundColor: 'transparent' }}
-        source={Media['splash.png']}
-      />
-    );
-  },
+        style={{
+          flex: 1,
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: Styles.screenW,
+          height: Styles.screenH / 2,
+          marginTop: 15,
+          alignItems: 'center',
+        }}
+      >
+        <Image
+          style={{
+            flex: 1,
+          }}
+          resizeMode="contain"
+          source={Media['splash.png']}
+        />
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 36,
+          }}
+        >
+          { I18n.t('flex_to_play') }
+        </Text>
+      </View>
+,
 );
 
 
