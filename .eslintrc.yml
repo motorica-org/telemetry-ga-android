@@ -1,8 +1,12 @@
-extends: airbnb
+parser: babel-eslint
+extends:
+  - airbnb
+  - plugin:flowtype/recommended
 plugins:
   - react
   - jsx-a11y
   - import
+  - flowtype
 rules:
   max-len:
     - error
@@ -14,3 +18,7 @@ rules:
   react/jsx-filename-extension:
     - error
     - extensions: ['.js', '.jsx']
+  flowtype/space-after-type-colon:
+    - error
+    - always
+    - allowLineBreak: true
