@@ -8,7 +8,7 @@ export default class extends React.Component {
   static route = {
     navigationBar: {
       title: I18n.t('settings'),
-    }
+    },
   }
 
   render() {
