@@ -40,7 +40,7 @@ const App = () =>
     <StackNavigation initialRoute={Router.getRoute('main')} />
   </NavigationProvider>;
 
-AppRegistry.registerComponent('telemetry_ga_android', () => App);
+AppRegistry.registerComponent('telemetryGAMobile', () => App);
 
 PermissionsAndroid.request(
     PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,

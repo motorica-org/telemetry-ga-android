@@ -12,7 +12,7 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "telemetry_ga_android";
+        return "telemetryGAMobile";
     }
 
     @Override
