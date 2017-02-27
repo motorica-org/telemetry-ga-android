@@ -1,4 +1,4 @@
-package com.telemetry_ga_android;
+package org.motorica.telemetry.ga.mobile;
 
 import android.view.View;
 

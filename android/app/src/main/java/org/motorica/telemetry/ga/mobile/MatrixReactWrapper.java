@@ -1,4 +1,4 @@
-package com.telemetry_ga_android;
+package org.motorica.telemetry.ga.mobile;
 
 import android.content.Context;
 import android.net.Uri;
@@ -29,7 +29,7 @@ import org.matrix.androidsdk.rest.model.login.Credentials;
 
 import java.util.ArrayDeque;
 
-import com.telemetry_ga_android.Messages.MotoricaMechanicalMessage;
+import org.motorica.telemetry.ga.mobile.Messages.MotoricaMechanicalMessage;
 
 
 class MatrixHelper {

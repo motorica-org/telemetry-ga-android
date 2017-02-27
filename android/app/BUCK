@@ -46,13 +46,13 @@ android_library(
 
 android_build_config(
   name = 'build_config',
-  package = 'com.telemetry_ga_android',
+  package = 'org.motorica.telemetry.ga.mobile',
 )
 
 android_resource(
   name = 'res',
   res = 'src/main/res',
-  package = 'com.telemetry_ga_android',
+  package = 'org.motorica.telemetry.ga.mobile',
 )
 
 android_binary(

@@ -87,7 +87,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "com.telemetry_ga_android"
+        applicationId "org.motorica.telemetry.ga.mobile"
         minSdkVersion 22
         targetSdkVersion 25
         versionCode 1

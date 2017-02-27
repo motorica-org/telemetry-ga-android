@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.telemetry_ga_android">
+    package="org.motorica.telemetry.ga.mobile">
 
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
