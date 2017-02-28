@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- workaround for https://github.com/facebook/react-native/issues/5886 -->
+    <!-- https://github.com/facebook/react-native/issues/5886#issuecomment-251843656 -->
+    <uses-permission tools:node="remove" android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+</manifest>
