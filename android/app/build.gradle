@@ -96,6 +96,7 @@ android {
         targetSdkVersion 25
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
+        resConfigs "en", "ru"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
