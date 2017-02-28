@@ -1,3 +1,7 @@
+plugins {
+    id 'com.gladed.androidgitversion' version '0.3.3'
+}
+
 apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
@@ -90,8 +94,8 @@ android {
         applicationId "org.motorica.telemetry.ga.mobile"
         minSdkVersion 22
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode androidGitVersion.code()
+        versionName androidGitVersion.name()
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
