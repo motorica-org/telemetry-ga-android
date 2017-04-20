@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   Image,
   StyleSheet,
   Text,
   View,
+  ToastAndroid,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -12,6 +14,11 @@ import Immutable from 'seamless-immutable';
 import I18n from './i18n';
 import Media from './Media';
 import Styles from './Styles';
+import Matrix from './Matrix';
+
+
+const groundLevel = Styles.screenH - 30;
+
 
 /*
  * Return a reducer that runs the reducer `reductions[action]`, defaulting to
@@ -37,10 +44,10 @@ const birdReduce = defaultReducer({
     return Immutable({
       time: 0,
       alive: true,
-      x: Styles.screenW - 280,
-      y: Styles.screenH / 2,
+      x: Styles.screenW / 5,
+      y: groundLevel / 2,
       w: 128,
-      h: 125,
+      h: 200,
       vx: 110,
       vy: 0,
       ay: 700,
@@ -50,7 +57,7 @@ const birdReduce = defaultReducer({
     });
   },
 
-  TICK({ splash, bird, pipes: { pipes } }, { dt }, dispatch) {
+  TICK({ splash, bird, pipes: { pipes }, score }, { dt }, dispatch) {
     let die = false;
     if (bird.alive) {
       // Screen borders
@@ -63,9 +70,9 @@ const birdReduce = defaultReducer({
         });
       }
       // bottom
-      if (bird.y + (bird.h / 2) > Styles.screenH) {
+      if (bird.y + (bird.h / 2) > groundLevel) {
         return bird.merge({
-          y: Styles.screenH - (bird.h / 2),
+          y: groundLevel - (bird.h / 2),
           vy: 0,
           ay: bird.gravityFlipped && bird.ay,
         });
@@ -80,7 +87,21 @@ const birdReduce = defaultReducer({
       ))) {
         die = true;
       }
-    } else if (bird.y > Styles.screenH + 400) {
+    } else if (bird.y > groundLevel + 400) {
+        Matrix.sendMessage('motorica-org.mechanical.v1.platformerscore',
+        {
+          body: `Platformer score: ${score}`,
+          timestamp: Date.now(),
+          power: Math.trunc(score),
+        }).done();
+      AsyncStorage.getItem('platformerscore')
+        .then(JSON.parse)
+        .then(x => Array.isArray(x) ? x : [])
+        .then(x => x.concat([Math.trunc(score)]))
+        .then(JSON.stringify)
+        .then(x => AsyncStorage.setItem('platformerscore', x))
+        .done();
+      ToastAndroid.show(`Score: ${Math.trunc(score)}`, ToastAndroid.SHORT);
       dispatch({ type: 'START' });
     }
 
@@ -120,23 +141,43 @@ const birdReduce = defaultReducer({
   },
 });
 
+const birdRunImgs = [
+  require('./img/platformer/run1.svg.png'),
+  require('./img/platformer/run2.svg.png'),
+  require('./img/platformer/run3.svg.png'),
+  require('./img/platformer/run4.svg.png'),
+  require('./img/platformer/run5.svg.png'),
+  require('./img/platformer/run6.svg.png'),
+];
+
+const birdJumpImgs = [
+  require('./img/platformer/jump2.svg.png'),
+  require('./img/platformer/jump3.svg.png'),
+  require('./img/platformer/jump4.svg.png'),
+];
+
 const Bird = connect(
   ({ bird }) => bird,
 )(
   ({ x, y, w, h, tickCount }) => {
-    const nearBorder = y - h / 2 < 5 || y + h / 2 - Styles.screenH > -5;
+    const nearBorder = (epsilon) => y + h / 2 - groundLevel > -epsilon;
+    const img = ((tick, nearBorder) => {
+      if (!nearBorder(100)) { return birdJumpImgs[2]; }
+      if (!nearBorder(60)) { return birdJumpImgs[1]; }
+      if (!nearBorder(10)) { return birdJumpImgs[0]; }
+      return birdRunImgs[Math.floor(tick / 2)];
+    })(tickCount, nearBorder);
     return (
       <Image
         key="bird-image"
         style={{ position: 'absolute',
           // Convert vertical position (i.e. `y` + account for `h`) => -1..1
-          transform: [{ scaleY: (((y - (h / 2)) / (Styles.screenH - h)) * 2) - 1 }],
           left: x - w / 2,
           top: y - h / 2,
           width: w,
           height: h,
           backgroundColor: 'transparent' }}
-        source={Media[tickCount < 5 && nearBorder ? 'floaty.png' : 'floaty2.png']}
+        source={img}
       />
     );
   },
@@ -189,7 +230,7 @@ const pipesReduce = defaultReducer({
     let cursorDir;
     if (pipes.cursor < 40) {
       cursorDir = true;
-    } else if (pipes.cursor > Styles.screenH - 340) {
+    } else if (pipes.cursor > groundLevel - 340) {
       cursorDir = false;
     } else {
       cursorDir = (pipes.cursorFlipTime < 0 ?
@@ -205,7 +246,7 @@ const pipesReduce = defaultReducer({
       cursorDir,
 
       distance: (pipes.distance < 0 ?
-                 240 * Math.random() + 140 :
+                 300 * Math.random() + 260 :
                  pipes.distance - bird.vx * dt),
       pipes: pipes.pipes.map(pipe => pipe.merge({
         x: pipe.x - bird.vx * dt,
@@ -214,11 +255,11 @@ const pipesReduce = defaultReducer({
   },
 
   ADD_PIPES({ pipes }) {
-    const bottom = Math.random() > 0.5;
+    const bottom = true;
     return pipes.merge({
       pipes: pipes.pipes.concat([
         // Makes sense for non-scalable objects (as in boxes and not f.i. pipes).
-        { ...defaultPipe, y: bottom ? Styles.screenH - 60 : 60, bottom, img: pickPipeImg() }, // FIXME: hardcoded height
+        { ...defaultPipe, y: bottom ? groundLevel - 60 : 60, bottom, img: pickPipeImg() }, // FIXME: hardcoded height
       ]),
     });
   },
@@ -333,7 +374,7 @@ const cloudReduce = defaultReducer({
     return Immutable({
       clouds: cloudImgs.map(img => ({
         x: Styles.screenW * 3 * Math.random(),
-        y: Styles.screenH * Math.random() - CLOUD_HEIGHT / 2,
+        y: groundLevel * Math.random() - CLOUD_HEIGHT / 2,
         vxFactor: 0.1 + 0.2 * Math.random(),
         img,
       })),
@@ -350,7 +391,7 @@ const cloudReduce = defaultReducer({
         }
         return cloud.merge({
           x: Styles.screenW * (1 + Math.random()),
-          y: Styles.screenH * Math.random() - CLOUD_HEIGHT / 2,
+          y: groundLevel * Math.random() - CLOUD_HEIGHT / 2,
           vxFactor: 0.2 + 0.2 * Math.random(),
         });
       }),
@@ -443,6 +484,39 @@ const Background = () =>
     source={Media['background.png']}
   />;
 
+
+/**
+ * End of game score screen
+ */
+const ScoreScreen = connect(
+  ({ score, dispatch }) => Immutable({ score: Math.floor(score), dispatch }),
+)(
+  ({ score, dispatch }) =>
+      <View
+        style={{
+          flex: 1,
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: Styles.screenW,
+          height: Styles.screenH / 2,
+          marginTop: 15,
+          alignItems: 'center',
+        }}
+      >
+    <Button onPress={() => dispatch({ type: 'START' })}>{score}</Button>
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 36,
+          }}
+        >
+          { I18n.t('flex_to_play') }
+        </Text>
+      </View>
+);
+
+
 /**
  * Rewind
  */
@@ -501,7 +575,7 @@ const sceneReduce = (state = Immutable({}), action, dispatch) => {
     case 'TOUCH':
       newState = newState.merge({
         splash: null,
-        reverse: !state.bird.alive,
+        // reverse: !state.bird.alive,
       });
       break;
   }
@@ -520,8 +594,8 @@ const Scene = () => (
     style={[Styles.container]}
   >
     <Background />
-    <Clouds />
     <Pipes />
+    <Clouds />
     <Bird />
     <Score />
     <Rewind />
