@@ -483,6 +483,15 @@ const Background = () =>
   />;
 
 
+const Ground = () =>
+  <Image
+    style={{
+      marginTop: -1,
+    }}
+    source={Media['ground.png']}
+  />;
+
+
 /**
  * End of game score screen
  */
@@ -592,6 +601,7 @@ const Scene = () => (
     style={[Styles.container]}
   >
     <Background />
+    <Ground />
     <Pipes />
     <Clouds />
     <Bird />

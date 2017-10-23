@@ -11,4 +11,5 @@ export default {
   'rewind.png': require('./img/platformer/rewind.png'),
   'splash.png': require('./img/platformer/splash.png'),
   'background.png': require('./img/platformer/background.png'),
+  'ground.png': require('./img/platformer/ground.png'),
 };
