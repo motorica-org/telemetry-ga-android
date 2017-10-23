@@ -37,5 +37,10 @@ export default props =>
         title={I18n.t('play_platformer')}
         color='#00796b'
       />
+      <Button
+        onPress={() => props.navigator.push(props.navigator.router.getRoute('platformer_scores'))}
+        title={I18n.t('platformer_scores')}
+        color='#10706b'
+      />
     </View>
   </View>;

@@ -26,6 +26,7 @@ Restart the app for settings to take effect.`,
 
     play_tamagochi: 'Play tamagochi',
     play_platformer: 'Play platformer',
+    platformer_scores: 'Platformer scores',
 
     flex_to_play: 'Flex to play',
   },
@@ -51,6 +52,7 @@ Restart the app for settings to take effect.`,
 
     play_tamagochi: 'Играть в тамагочи',
     play_platformer: 'Играть в платформер',
+    platformer_scores: 'Очки за платформер',
 
     flex_to_play: 'Сожми, чтобы начать',
   },

@@ -16,6 +16,7 @@ import {
 import MainScreen from './screens/MainScreen';
 import TamagochiScreen from './screens/TamagochiScreen';
 import PlatformerScreen from './screens/PlatformerScreen';
+import PlatformerScoresScreen from './screens/PlatformerScoresScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import ScanQRSettingsScreen from './screens/ScanQRSettingsScreen';
 
@@ -35,6 +36,7 @@ const Router = createRouter(() => ({
   main: () => MainScreen,
   tamagochi: () => TamagochiScreen,
   platformer: () => PlatformerScreen,
+  platformer_scores: () => PlatformerScoresScreen,
   settings: () => SettingsScreen,
   scanqrsettings: () => ScanQRSettingsScreen,
 }));

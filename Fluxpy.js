@@ -93,12 +93,12 @@ const birdReduce = defaultReducer({
           timestamp: Date.now(),
           power: Math.trunc(score),
         }).done();
-      AsyncStorage.getItem('platformerscore')
+      AsyncStorage.getItem('platformerscores')
         .then(JSON.parse)
         .then(x => Array.isArray(x) ? x : [])
         .then(x => x.concat([Math.trunc(score)]))
         .then(JSON.stringify)
-        .then(x => AsyncStorage.setItem('platformerscore', x))
+        .then(x => AsyncStorage.setItem('platformerscores', x))
         .done();
       ToastAndroid.show(`Score: ${Math.trunc(score)}`, ToastAndroid.SHORT);
       dispatch({ type: 'START' });
