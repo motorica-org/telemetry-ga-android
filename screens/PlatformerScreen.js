@@ -30,14 +30,14 @@ import { sceneReduce, Scene } from '../Fluxpy';
 
 const Touch = connect()(
   ({ dispatch, children, ...props }) => {
-    const panGrant = (_, gestureState) =>
-      { dispatch({ type: 'TOUCH' }); setTimeout(() => dispatch({type:'TOUCH'}), 500); }
+    const panGrant = () =>
+      { dispatch({ type: 'TOUCH' }) };
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: panGrant,
       onShouldBlockNativeResponder: () => false,
     });
-    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', () => dispatch({ type: 'TOUCH' }));
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', panGrant);
 
     return (
       <View

@@ -48,11 +48,10 @@ const birdReduce = defaultReducer({
       y: groundLevel / 2,
       w: 128,
       h: 200,
-      vx: 110,
+      vx: 100,
       vy: 0,
       ay: 700,
-      ax: 9,
-      gravityFlipped: false,
+      ax: 7,
       tickCount: 0,
     });
   },
@@ -66,7 +65,7 @@ const birdReduce = defaultReducer({
         return bird.merge({
           y: bird.h / 2,
           vy: 0,
-          ay: !bird.gravityFlipped && -bird.ay,
+          ay: -bird.ay * (bird.vx / 100 / 2),
         });
       }
       // bottom
@@ -74,7 +73,7 @@ const birdReduce = defaultReducer({
         return bird.merge({
           y: groundLevel - (bird.h / 2),
           vy: 0,
-          ay: bird.gravityFlipped && bird.ay,
+          ay: bird.ay,
         });
       }
 
@@ -87,7 +86,7 @@ const birdReduce = defaultReducer({
       ))) {
         die = true;
       }
-    } else if (bird.y > groundLevel + 400) {
+    } else if (bird.y > groundLevel + 400 || bird.y < 0) {
         Matrix.sendMessage('motorica-org.mechanical.v1.platformerscore',
         {
           body: `Platformer score: ${score}`,
@@ -131,8 +130,7 @@ const birdReduce = defaultReducer({
 
   TOUCH({ bird }) {
     return bird.merge({
-      ay: !bird.gravityFlipped ? -700 : 700,
-      gravityFlipped: !bird.gravityFlipped,
+      ay: -280 * (1 + bird.ax / 100),
     });
   },
 
@@ -212,7 +210,7 @@ const pipesReduce = defaultReducer({
       cursor: 100,
       cursorDir: Math.random() < 0.5,
       cursorFlipTime: Math.random(),
-      distance: 120,
+      distance: 300,
       pipes: [],
     });
   },
@@ -246,7 +244,7 @@ const pipesReduce = defaultReducer({
       cursorDir,
 
       distance: (pipes.distance < 0 ?
-                 300 * Math.random() + 260 :
+                 360 * Math.random() + 400 :
                  pipes.distance - bird.vx * dt),
       pipes: pipes.pipes.map(pipe => pipe.merge({
         x: pipe.x - bird.vx * dt,
